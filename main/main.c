@@ -61,13 +61,16 @@ int main() {
     // Make the I2C pins available to picotool
     bi_decl(bi_2pins_with_func(SDA_PIN, SCL_PIN, GPIO_FUNC_I2C));
 
-
+    printf("Starting\n");
     while (true) {
         value = getchar();
         //printf("Got %c\n", value);
         blink(1, BLINK_HBT);
 
         switch(value){
+            case 'i':
+                printf("Built %s\n", __TIME__);
+                break;
             case 's':
                 exp_search(i2c_default);
                 break;
