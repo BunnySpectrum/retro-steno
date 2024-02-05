@@ -9,6 +9,7 @@ pico_sdk_init()
 
 add_executable(test
     ./src/main.c
+    ./src/exp.c
 )
 
 # pull in common dependencies
