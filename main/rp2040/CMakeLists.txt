@@ -1,25 +1,22 @@
 cmake_minimum_required(VERSION 3.13)
 
-set(PROJECT_NAME app_rp2040_metro)
-
 
 include(pico_sdk_import.cmake)
-project(${PROJECT_NAME} C CXX ASM)
+project(app_rp2040_metro C CXX ASM)
 
 set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
-include_directories(./lib)
-add_executable(${PROJECT_NAME}
-    ./main/main.c
-    ./lib/exp.c
-)
 
-# add_executable(unittest
-#     ./test/unittest/test_exp.c
-# )
+
+include_directories(../../lib)
+add_executable(${PROJECT_NAME}
+    main.c
+    ../../lib/IOExpander/IOExpPCF8574AN/IOExpPCF8574AN.c
+    ../../lib/I2C/
+)
 
 # pull in common dependencies
 target_link_libraries(${PROJECT_NAME} pico_stdlib hardware_i2c)
