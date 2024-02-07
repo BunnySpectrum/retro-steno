@@ -1,11 +1,12 @@
 #ifndef _EXP_H_
 #define _EXP_H_
 
-#include "hardware/i2c.h"
+#include "hw/drv_i2c.h"
+// #include "hardware/i2c.h"
 
 
-void exp_search(i2c_inst_t* i2c);
-uint8_t exp_check(i2c_inst_t* i2c, uint8_t addr);
+void exp_search(uint8_t id);
+uint8_t exp_check(uint8_t id, uint8_t addr);
 
 #define EXP_0 0x38
 #define EXP_1 0x39

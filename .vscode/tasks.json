@@ -1,0 +1,51 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "pico-info",
+            "type": "shell",
+            "command": "picotool info",
+            "problemMatcher": []
+        },
+        {
+            "label": "app-load",
+            "type": "shell",
+            "command": "picotool reboot -f -u; sleep 2; picotool load build/rp2040/app_rp2040_metro.bin; picotool reboot",
+            "problemMatcher": [],
+            "dependsOn": ["app-build"]
+        },
+        {
+            "label": "app-build",
+            "type": "shell",
+            "command": "cmake --build build/rp2040",
+            "problemMatcher": []
+        },
+        {
+            "label": "app-rebuild",
+            "type": "shell",
+            "command": "cmake --build build/rp2040 --clean-first",
+            "problemMatcher": []
+        },
+        {
+            "label": "test-build",
+            "type": "shell",
+            "command": "cmake --build build/unittest",
+            "problemMatcher": []
+        },
+        {
+            "label": "test-run",
+            "type": "shell",
+            "command": "./build/unittest/rs_unittest.exe",
+            "problemMatcher": [],
+            "dependsOn":["test-build"]
+        },
+        {
+            "label": "test-rebuild",
+            "type": "shell",
+            "command": "cmake --build build/unittest --clean-first",
+            "problemMatcher": []
+        }
+    ]
+}

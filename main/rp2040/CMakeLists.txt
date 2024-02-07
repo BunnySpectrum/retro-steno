@@ -14,8 +14,8 @@ pico_sdk_init()
 include_directories(../../lib)
 add_executable(${PROJECT_NAME}
     main.c
-    ../../lib/IOExpander/IOExpPCF8574AN/IOExpPCF8574AN.c
-    ../../lib/I2C/
+    drv_i2c_rp2040.c
+    ../../lib/bsp/exp.c
 )
 
 # pull in common dependencies
