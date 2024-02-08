@@ -71,12 +71,6 @@ int main() {
             case 's':
                 exp_search(I2C_ID);
                 break;
-            case '\n':
-                printf("\n");
-                break;
-            case '\r':
-                printf("\r");
-                break;
             case 'r':
                 printf("Read\n");
                 if (rs_i2c_read(I2C_ID, 0x37, &value, 1, 0) < 0){

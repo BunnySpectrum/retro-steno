@@ -17,6 +17,12 @@
             "dependsOn": ["app-build"]
         },
         {
+            "label": "app-config",
+            "type": "shell",
+            "command": "cmake -S main/rp2040 -B build/rp2040 -G 'Unix Makefiles'",
+            "problemMatcher": []
+        },
+        {
             "label": "app-build",
             "type": "shell",
             "command": "cmake --build build/rp2040",
@@ -26,6 +32,12 @@
             "label": "app-rebuild",
             "type": "shell",
             "command": "cmake --build build/rp2040 --clean-first",
+            "problemMatcher": []
+        },
+        {
+            "label": "test-config",
+            "type": "shell",
+            "command": "cmake -S main/unittest -B build/unittest -G 'Unix Makefiles'",
             "problemMatcher": []
         },
         {

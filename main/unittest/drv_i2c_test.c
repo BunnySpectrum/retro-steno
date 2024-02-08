@@ -38,6 +38,6 @@ uint8_t rs_i2c_read(uint8_t id, uint8_t addr, uint8_t *dst, size_t len, uint8_t 
 }
 
 uint8_t rs_i2c_info(uint8_t id){
-    printf("In i2c_test driver: %d\n", id);
+    printf("In %s: %d\n", __FILE__, id);
     return 0;
 }
