@@ -1,43 +1,37 @@
 #include "hw/drv_i2c.h"
 
-#include <stdio.h>
 
-uint8_t rs_i2c_init(uint8_t id, uint32_t speed){
-    return 0;
+RSCode_e rs_i2c_init(uint8_t id, uint32_t speed){
+    return RS_CODE_OK;
 }
 
-uint8_t rs_i2c_read(uint8_t id, uint8_t addr, uint8_t *dst, size_t len, uint8_t nostop){
-    uint8_t rc = 0;
+RSCode_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop){
+    resp->rc = RS_CODE_OK;
 
     switch(addr){
         case 0x38:
-            *dst = 0;
-            rc = 1;
+            resp->data[0] = 0;
+            resp->length = 1;
             break;
 
         case 0x39:
-            *dst = 0xFF;
-            rc = 1;
+            resp->data[0] = 0xFF;
+            resp->length = 1;
             break;
 
         case 0x3A:
-            *dst = 0xFF;
-            rc = 1;
+            resp->data[0] = 0xFF;
+            resp->length = 1;
             break;
 
         case 0x3B:
-            *dst = 0xFF;
-            rc = 1;
+            resp->data[0] = 0xFF;
+            resp->length = 1;
             break;
 
         default:
-            rc = -2;
+            resp->rc = RS_CODE_ERR;
             break;
     }
-    return rc;
-}
-
-uint8_t rs_i2c_info(uint8_t id){
-    printf("In %s: %d\n", __FILE__, id);
-    return 0;
+    return resp->rc;
 }

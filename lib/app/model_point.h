@@ -20,6 +20,9 @@
 #define MP_VALID 1
 #define MP_INVALID 0
 
+#define MP_TRUE 1
+#define MP_FALSE 0
+
 // I mostly forsee this being used for testing
 typedef enum ModelPointLockReq{
     mpLockReqNone,
@@ -56,7 +59,6 @@ typedef struct mp<some name>{
 typedef struct mpBase{
     mpSubscriber_t *subscribers; //for now, choosing to create all subscribers at compile time
     const char* name;   // assumed unique, but not enforced 
-    void* data;
     size_t dataSize;
     uint16_t sequence; // wraps around, but will never be zero
     uint8_t valid;
@@ -74,15 +76,17 @@ static uint8_t activeModelPointCount = 0;
 void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCount, size_t dataSize);
 
 // Public interface
-const char* get_name(mpBase_t);
+const char* mp_get_name(mpBase_t mp);
 //size_t get_size(mpBase_t); // not including since mpBase is always same size
-uint16_t get_sequence(mpBase_t);
-void touch(mpBase_t); // triggers change notifications, but doesn't change any mp state
-uint16_t set_invalid(mpBase_t, ModelPointLockReq_e lockRequest); //returns sequence value
-uint8_t is_not_valid(mpBase_t, uint16_t* seqNumPtr); // returns true if valid; also sets current sequence number
-uint8_t is_locked(mpBase_t); //returns if locked or not
-uint16_t set_lock_state(mpBase_t, ModelPointLockReq_e lockRequest);
-void mp_print(mpBase_t);
+uint16_t mp_get_sequence(mpBase_t mp);
+uint8_t mp_is_valid(mpBase_t mp, uint16_t* seqNumPtr); // returns true if valid; also sets current sequence number
+uint8_t mp_is_locked(mpBase_t mp); //returns if locked or not
+
+uint16_t mp_set_invalid(mpBase_t* mp, ModelPointLockReq_e lockRequest); //returns sequence value
+uint16_t mp_set_lock_state(mpBase_t* mp, ModelPointLockReq_e lockRequest); //returns sequence value
+
+void mp_touch(mpBase_t* mp); // triggers change notifications, but doesn't change any mp state
+void mp_print(mpBase_t mp);
 
 
 // Private interface

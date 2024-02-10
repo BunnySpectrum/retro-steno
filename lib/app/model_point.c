@@ -1,6 +1,7 @@
 #include "model_point.h"
 
 #include "utils/rs_string.h"
+#include "utils/rs_stdio.h"
 
 void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCount, size_t dataSize){
     mp->subscribers = subscriberList;
@@ -13,8 +14,37 @@ void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCou
 
 }
 
-const char* get_name(mpBase_t mp){
+const char* mp_get_name(mpBase_t mp){
     return mp.name;
+}
+
+uint16_t mp_get_sequence(mpBase_t mp){
+    return mp.sequence;
+}
+
+
+uint8_t mp_is_valid(mpBase_t mp, uint16_t* seqNumPtr){
+    *seqNumPtr = mp.sequence;
+    return mp.valid == MP_VALID;
+}
+
+uint8_t mp_is_locked(mpBase_t mp){
+    return mp.locked == mpLockReqLock;
+}
+
+
+uint16_t mp_set_lock_state(mpBase_t* mp, ModelPointLockReq_e lockRequest){
+    if(lockRequest != mpLockReqNone){
+        mp->locked = lockRequest;
+    }
+    return mp->sequence;
+}
+
+uint16_t mp_set_invalid(mpBase_t* mp, ModelPointLockReq_e lockRequest){
+    mp_set_lock_state(mp, lockRequest);
+    mp->valid = MP_INVALID;
+
+    return mp->sequence;
 }
 
 void mp_print(mpBase_t mp){

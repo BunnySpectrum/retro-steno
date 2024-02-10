@@ -3,30 +3,38 @@
 //pico SDK
 #include "hardware/i2c.h"
 
-#include <stdio.h>
+
 
 #define I2C_INSTANCE_COUNT 2
 static i2c_inst_t *i2c_instances[I2C_INSTANCE_COUNT] = {&i2c0_inst, &i2c1_inst};
 
-uint8_t rs_i2c_init(uint8_t id, uint32_t speed){
+RSCode_e rs_i2c_init(uint8_t id, uint32_t speed){
+    uint32_t actualSpeed;
+
     if (id > I2C_INSTANCE_COUNT-1){
-        return PICO_ERROR_GENERIC;
+        return RS_CODE_ERR;
     }
 
-    i2c_init(i2c_instances[id], speed);
+    actualSpeed = i2c_init(i2c_instances[id], speed);
+    if (actualSpeed == speed){
+        return RS_CODE_OK;
+    }
+
+    return RS_CODE_ERR;
 
 }
 
-uint8_t rs_i2c_read(uint8_t id, uint8_t addr, uint8_t *dst, size_t len, uint8_t nostop){
+RSCode_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop){
+    resp->rc = RS_CODE_ERR;
+
     if (id > I2C_INSTANCE_COUNT-1){
-        return PICO_ERROR_GENERIC;
+        return resp->rc;
     }
         
-    return i2c_read_blocking(i2c_instances[id], addr, dst, len, nostop);
+    if(resp->length == i2c_read_blocking(i2c_instances[id], addr, &resp->data, resp->length, nostop)){
+        resp->rc = RS_CODE_OK;
+    }
 
-}
+    return resp->rc;
 
-uint8_t rs_i2c_info(uint8_t id){
-    printf("In i2c_rp2040 driver: %d\n", id);
-    return 0;
 }
