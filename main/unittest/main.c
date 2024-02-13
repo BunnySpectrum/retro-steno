@@ -28,6 +28,7 @@ int main(void) {
     RUN_TEST(test_strlen);
 
     RUN_TEST(test_ioexp_check);
+    RUN_TEST(test_ioexp_read);
 
     RUN_TEST(test_modelpoint_init);
     RUN_TEST(test_modelpoint_set_lock_state);

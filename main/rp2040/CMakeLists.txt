@@ -16,6 +16,7 @@ add_executable(${PROJECT_NAME}
     main.c
     drv_i2c_rp2040.c
     ../../lib/bsp/exp.c
+    ../../lib/bsp/keyboard.c
 )
 
 # pull in common dependencies

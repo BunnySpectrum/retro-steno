@@ -38,5 +38,8 @@ static inline uint8_t reserved_addr(uint8_t addr) {
 
 uint8_t exp_check(uint8_t id, uint8_t addr){
     i2cResponse_t scratch;
+    scratch.length = 1;
+    uint8_t data;
+    scratch.data = &data;
     return rs_i2c_read(id, addr, &scratch, 0);
 }
