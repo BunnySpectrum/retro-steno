@@ -197,6 +197,7 @@ int main() {
     PinInputFSM_e keyInputState = RS_PIN_STATE_HIGH; 
     uint8_t keyState[4];
     MPKeyboard_t mpKeyboard;
+    uint8_t streamMode = 0;
 
     bsp_gpio_init();
 
@@ -240,9 +241,13 @@ int main() {
                         // printf("Pressed: %d\n", pressCounter++);
                         gpio_set_irq_enabled_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
                         if(RS_CODE_OK == read_keys(keyState, &mpKeyboard)){
-                            printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
-                            printf("\t%#lx\n", mpKeyboard.data.keyMask);
-                            print_keyboard_state(mpKeyboard);
+                            if(streamMode != 0){
+                                send_keyboard_state(mpKeyboard);
+                            }else{
+                                printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
+                                printf("\t%#lx\n", mpKeyboard.data.keyMask);
+                                print_keyboard_state(mpKeyboard);
+                            }
                         }
                     }
                     //else this was a bounce
@@ -272,6 +277,15 @@ int main() {
             printf("{msg:'");
             while((inputChar = getchar_timeout_us(0)) != PICO_ERROR_TIMEOUT){
                 printf("%c",  inputChar);
+                switch(inputChar){
+                    case 'r':
+                        break;
+
+                    case 's':
+                        streamMode ^= 0x1;
+                        break;
+
+                }
                 if (inputChar == 'r'){
                         if(RS_CODE_OK == read_keys(keyState, &mpKeyboard)){
                             printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
