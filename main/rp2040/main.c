@@ -284,6 +284,10 @@ int main() {
                     case 's':
                         streamMode ^= 0x1;
                         break;
+                    case 'i':
+                        printf("info\n");
+                        rs_printf("\ttest\n");
+                        break;
 
                 }
                 if (inputChar == 'r'){
@@ -363,3 +367,4 @@ int main() {
         // }
     } //end while(true)
 }
+

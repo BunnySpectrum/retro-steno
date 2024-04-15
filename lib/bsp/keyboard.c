@@ -1,7 +1,7 @@
 
 #include "keyboard.h"
-#include "pico/stdio.h"
-#include "tusb.h"
+// #include "pico/stdio.h"
+// #include "tusb.h"
 
 
 void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t subscriberCount){
