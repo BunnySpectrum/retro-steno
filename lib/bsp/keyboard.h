@@ -21,7 +21,7 @@ void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t 
 void keyboard_init();
 void get_pressed_keys();
 
-void print_keyboard_state(MPKeyboard_t mp);
+void print_keyboard_state(Logger_s logger, MPKeyboard_t mp);
 void send_keyboard_state(MPKeyboard_t mp);
 
 #define KEY_INDEX_Si 0

@@ -198,6 +198,9 @@ int main() {
     uint8_t keyState[4];
     MPKeyboard_t mpKeyboard;
     uint8_t streamMode = 0;
+    Logger_s debugPrinter;
+
+    debugPrinter.printer = &rs_vprintf;
 
     bsp_gpio_init();
 
@@ -246,7 +249,7 @@ int main() {
                             }else{
                                 printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
                                 printf("\t%#lx\n", mpKeyboard.data.keyMask);
-                                print_keyboard_state(mpKeyboard);
+                                print_keyboard_state(debugPrinter, mpKeyboard);
                             }
                         }
                     }
@@ -286,7 +289,6 @@ int main() {
                         break;
                     case 'i':
                         printf("info\n");
-                        rs_printf("\ttest\n");
                         break;
 
                 }
@@ -294,7 +296,7 @@ int main() {
                         if(RS_CODE_OK == read_keys(keyState, &mpKeyboard)){
                             printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
                             printf("\t%#lx\n", mpKeyboard.data.keyMask);
-                            print_keyboard_state(mpKeyboard);
+                            print_keyboard_state(debugPrinter, mpKeyboard);
                         }
 
                 }

@@ -9,6 +9,7 @@
 #include "tests/test_ioexp.h"
 #include "tests/test_modelpoint.h"
 #include "tests/test_mp_keyboard.h"
+#include "tests/test_keyboard.h"
 
 void setUp(void) {
     // set stuff up here
@@ -35,6 +36,7 @@ int main(void) {
     RUN_TEST(test_modelpoint_set_invalid);
     
     RUN_TEST(test_mp_keyboard_init);
+    RUN_TEST(test_print_keyboard_state);
 
     return UNITY_END();
 }
