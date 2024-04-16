@@ -49,7 +49,9 @@
         {
             "label": "test-run",
             "type": "shell",
-            "command": "./build/unittest/rs_unittest.exe",
+            "windows":{"command": "./build/unittest/rs_unittest.exe"},
+            "osx":{"command": "./build/unittest/rs_unittest"},
+            "linux":{"command": "./build/unittest/rs_unittest"},
             "problemMatcher": [],
             "dependsOn":["test-build"]
         },
