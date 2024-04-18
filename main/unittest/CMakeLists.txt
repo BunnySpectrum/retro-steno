@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 include_directories(../../external/Unity/src)
 include_directories(../../lib)
 include_directories(tests)
+include_directories(utils)
 add_executable(${PROJECT_NAME}
     main.c
     ../../external/Unity/src/unity.c
@@ -17,6 +18,7 @@ add_executable(${PROJECT_NAME}
     ../../lib/bsp/exp.c
     ../../lib/bsp/keyboard.c
     ../../lib/app/model_point.c
+    utils/log_check.c
     drv_i2c_test.c
     tests/test_ioexp.c
     tests/test_modelpoint.c

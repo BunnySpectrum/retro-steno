@@ -5,9 +5,6 @@
 #include "test_keyboard.h"
 
 
-int mock_vprintf(Logger_s logger, const char* fmt, va_list args){
-    vprintf(fmt, args);
-}
 
 
 void test_print_keyboard_state(void) {

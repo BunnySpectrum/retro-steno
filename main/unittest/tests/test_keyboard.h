@@ -3,6 +3,7 @@
 
 #include "bsp/keyboard.h"
 #include "app/model_point.h"
+#include "log_check.h"
 
 void test_print_keyboard_state(void);
 

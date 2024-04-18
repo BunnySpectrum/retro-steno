@@ -1,6 +1,16 @@
 //#include <stdint.h>
 #include <stdio.h>
 
+#define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
+// #define PICO_BOOT_STAGE2_CHOOSE_GENERIC_03H 1
+#define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
+#define PICO_FLASH_SPI_CLKDIV 2
+#define PICO_FLASH_SIZE_BYTES (8 * 1024 * 1024)
+#define PICO_RP2040_B0_SUPPORTED 0
+#define PICO_RP2040_B1_SUPPORTED 0
+// #define PICO_RP2040_B1_SUPPORTED 0
+// #define PICO_RP2040_B2_SUPPORTED 1
+
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
 #include "pico/binary_info.h"
@@ -9,16 +19,36 @@
 #include "hw/drv_i2c.h"
 #include "bsp/keyboard.h"
 
+#define BOARD 2
+
+#if (BOARD == 1)
+#pragma message("Using Metro")
+#define BOARD_METRO
+
+#define LED_PIN 13
+#define SDA_PIN 16 //SDA0
+#define SCL_PIN 17 //SCL0
+#define PIN_KEY_ENTER 12
+#define I2C_ID 0
+
+#elif (BOARD == 2)
+#pragma message("Using KB2040")
+#define BOARD_KB
+
+#define LED_PIN 0
+#define SDA_PIN 28
+#define SCL_PIN 29
+#define PIN_KEY_ENTER 12
+#define I2C_ID 0
+
+#else
+#error "Need to specify BOARD"
+#endif
+
 #define BLINK_LONG 500
 #define BLINK_HBT 10
 #define BLINK_FAST 100
 
-#define LED_PIN 13
-#define SDA_PIN 16
-#define SCL_PIN 17
-#define PIN_KEY_ENTER 12
-
-#define I2C_ID 0
 
 #define HBT_TASK_PERIOD_MS 200
 #define INPUT_TASK_PERIOD_MS 10
@@ -202,6 +232,7 @@ int main() {
 
     debugPrinter.printer = &rs_vprintf;
 
+
     bsp_gpio_init();
 
     flag = stdio_usb_init();
@@ -288,7 +319,7 @@ int main() {
                         streamMode ^= 0x1;
                         break;
                     case 'i':
-                        printf("info\n");
+                        printf("Built at %s\n", __TIME__);
                         break;
 
                 }
