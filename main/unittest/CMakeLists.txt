@@ -20,6 +20,8 @@ add_executable(${PROJECT_NAME}
     ../../lib/app/model_point.c
     utils/log_check.c
     drv_i2c_test.c
+    drv_gpio_test.c
+    tests/test_gpio.c
     tests/test_ioexp.c
     tests/test_modelpoint.c
     tests/test_mp_keyboard.c

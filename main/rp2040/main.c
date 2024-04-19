@@ -1,15 +1,6 @@
 //#include <stdint.h>
 #include <stdio.h>
 
-#define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
-// #define PICO_BOOT_STAGE2_CHOOSE_GENERIC_03H 1
-#define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
-#define PICO_FLASH_SPI_CLKDIV 2
-#define PICO_FLASH_SIZE_BYTES (8 * 1024 * 1024)
-#define PICO_RP2040_B0_SUPPORTED 0
-#define PICO_RP2040_B1_SUPPORTED 0
-// #define PICO_RP2040_B1_SUPPORTED 0
-// #define PICO_RP2040_B2_SUPPORTED 1
 
 #include "pico/stdlib.h"
 #include "pico/stdio_usb.h"
@@ -17,13 +8,21 @@
 
 #include "bsp/exp.h"
 #include "hw/drv_i2c.h"
+#include "hw/drv_gpio.h"
 #include "bsp/keyboard.h"
 
-#define BOARD 2
+#define BOARD 1
 
 #if (BOARD == 1)
 #pragma message("Using Metro")
 #define BOARD_METRO
+// #define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
+// #define PICO_BOOT_STAGE2_CHOOSE_GENERIC_03H 1
+// #define PICO_FLASH_SPI_CLKDIV 2
+// #define PICO_FLASH_SIZE_BYTES (16 * 1024 * 1024)
+// #define PICO_RP2040_B0_SUPPORTED 0
+// #define PICO_RP2040_B1_SUPPORTED 0
+// #define PICO_RP2040_B2_SUPPORTED 1
 
 #define LED_PIN 13
 #define SDA_PIN 16 //SDA0
@@ -34,6 +33,12 @@
 #elif (BOARD == 2)
 #pragma message("Using KB2040")
 #define BOARD_KB
+#define PICO_XOSC_STARTUP_DELAY_MULTIPLIER 64
+#define PICO_BOOT_STAGE2_CHOOSE_W25Q080 1
+#define PICO_FLASH_SPI_CLKDIV 2
+#define PICO_FLASH_SIZE_BYTES (8 * 1024 * 1024)
+#define PICO_RP2040_B0_SUPPORTED 0
+#define PICO_RP2040_B1_SUPPORTED 0
 
 #define LED_PIN 0
 #define SDA_PIN 28
@@ -62,7 +67,7 @@ volatile int16_t taskKeyDebounce = -1;
 volatile uint64_t lastTimestamp = 0;
 
 void hbt_toggle(){
-    gpio_put(LED_PIN, hbtState);
+    rs_gpio_put(LED_PIN, hbtState);
     hbtState ^= 0x1;
 }
 
@@ -102,9 +107,9 @@ bool timer_callback_test(struct repeating_timer *t){
 
 void blink(uint8_t count, uint16_t delay){
     for(uint8_t i=0; i<count; i++){
-        gpio_put(LED_PIN, 1);
+        rs_gpio_put(LED_PIN, 1);
         sleep_ms(delay);
-        gpio_put(LED_PIN, 0);
+        rs_gpio_put(LED_PIN, 0);
         sleep_ms(delay);
     }
 }
@@ -123,13 +128,22 @@ void gpio_callback(uint gpio, uint32_t events){
 }
 
 void bsp_gpio_init(void){
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
+    RS_GPIO_Config_s ledConfig = {
+        .direction = RS_GPIO_OUTPUT,
+        .function = GPIO_FUNC_SIO,
+        .value = 0
+    };
+    rs_gpio_init(LED_PIN, &ledConfig);
 
-    gpio_init(PIN_KEY_ENTER);
-    gpio_set_dir(PIN_KEY_ENTER, GPIO_IN);
-    gpio_set_input_hysteresis_enabled(PIN_KEY_ENTER, true);
-    gpio_set_irq_enabled_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+    RS_GPIO_Config_s enterKeyConfig = {
+        .direction = RS_GPIO_INPUT,
+        .function = GPIO_FUNC_SIO,
+        .value = 0
+    };
+    rs_gpio_init(PIN_KEY_ENTER, &enterKeyConfig);
+
+    rs_gpio_set_input_hysteresis(PIN_KEY_ENTER, RS_TRUE);
+    rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_FALL, RS_TRUE, &gpio_callback);
 
 }
 
@@ -251,10 +265,10 @@ int main() {
         blink(10, BLINK_FAST);
     };
 
-    gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(SDA_PIN);
-    gpio_pull_up(SCL_PIN);
+    rs_gpio_set_function(SDA_PIN, GPIO_FUNC_I2C);
+    rs_gpio_set_function(SCL_PIN, GPIO_FUNC_I2C);
+    rs_gpio_pull_up(SDA_PIN);
+    rs_gpio_pull_up(SCL_PIN);
     // Make the I2C pins available to picotool
     bi_decl(bi_2pins_with_func(SDA_PIN, SCL_PIN, GPIO_FUNC_I2C));
 
@@ -273,7 +287,7 @@ int main() {
                     if(gpio_get(PIN_KEY_ENTER) == 0){ // we are now low
                         keyInputState = RS_PIN_STATE_LOW;
                         // printf("Pressed: %d\n", pressCounter++);
-                        gpio_set_irq_enabled_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
+                        rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_RISE, RS_TRUE, &gpio_callback);
                         if(RS_CODE_OK == read_keys(keyState, &mpKeyboard)){
                             if(streamMode != 0){
                                 send_keyboard_state(mpKeyboard);
@@ -291,7 +305,7 @@ int main() {
                     if(gpio_get(PIN_KEY_ENTER) == 1){ // we are now high
                         keyInputState = RS_PIN_STATE_HIGH;
                         // printf("Released: %d\n", releaseCounter++);
-                        gpio_set_irq_enabled_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+                        rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, GPIO_IRQ_EDGE_FALL, RS_TRUE, &gpio_callback);
                     }
                     //else this was a bounce
                     break;

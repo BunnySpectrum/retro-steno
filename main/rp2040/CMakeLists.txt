@@ -15,6 +15,7 @@ include_directories(../../lib)
 add_executable(${PROJECT_NAME}
     main.c
     drv_i2c_rp2040.c
+    drv_gpio_rp2040.c
     ../../lib/utils/rs_stdio.c
     ../../lib/bsp/exp.c
     ../../lib/bsp/keyboard.c

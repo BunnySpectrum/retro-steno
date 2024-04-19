@@ -10,6 +10,7 @@
 #include "tests/test_modelpoint.h"
 #include "tests/test_mp_keyboard.h"
 #include "tests/test_keyboard.h"
+#include "tests/test_gpio.h"
 
 void setUp(void) {
     // set stuff up here
@@ -27,6 +28,9 @@ int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_strcpy);
     RUN_TEST(test_strlen);
+
+    RUN_TEST(test_gpio_init_null);
+    RUN_TEST(test_gpio_init_cfg);
 
     RUN_TEST(test_ioexp_check);
     RUN_TEST(test_ioexp_read);
