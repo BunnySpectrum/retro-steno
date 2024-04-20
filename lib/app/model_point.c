@@ -49,11 +49,11 @@ uint16_t mp_set_invalid(mpBase_t* mp, ModelPointLockReq_e lockRequest){
 
 void mp_print(mpBase_t mp){
     printf("Name: %s\n", mp.name);
-    printf("Datasize: %d\n", mp.dataSize);
+    printf("Datasize: %zu\n", mp.dataSize);
     printf("Seq: %d\n", mp.sequence);
     printf("Valid: %d\n", mp.valid);
     printf("Locked: %d\n", mp.locked);
     printf("Sub Count: %d\n", mp.subscriberCount);
-    printf("Sub list: %lu\n", mp.subscribers);
+    printf("Sub list: %p\n", mp.subscribers);
 
 }

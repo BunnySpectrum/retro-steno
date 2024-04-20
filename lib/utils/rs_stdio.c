@@ -8,5 +8,5 @@ void rs_log(Logger_s logger, const char* fmt, ...){
 }
 
 int rs_vprintf(Logger_s logger, const char* fmt, va_list args){
-    vprintf(fmt, args);
+    return vprintf(fmt, args);
 }

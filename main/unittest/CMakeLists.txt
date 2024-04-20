@@ -4,7 +4,7 @@ project(rs_unittest C CXX ASM)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
-
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 include_directories(../../external/Unity/src)
 include_directories(../../lib)
