@@ -11,7 +11,7 @@ void test_print_keyboard_state(void) {
     uint8_t dataSize = sizeof(MPKeyboardData_t);
     uint8_t subCount = 2;
     Logger_s logger;
-    logger.printer = &mock_vprintf;
+    logger.printer = &mock_vsnprintf;
 
 
 
@@ -23,5 +23,11 @@ void test_print_keyboard_state(void) {
     keyboard_mp_init(&kb, (mpSubscriber_t*)&subList, subCount);
     kb.data.keyMask = 0x33;
 
+    /*
+        4 lines, each has 31 chars (10 prints of 3 characters, followed by single newline) 
+        128 chars total
+    */
+    start_log_buf();
     print_keyboard_state(logger, kb);
+    dump_buffer();
 }
