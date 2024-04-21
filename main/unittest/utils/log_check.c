@@ -24,3 +24,7 @@ void dump_buffer(void){
     }
     printf("\n");
 }
+
+int compare_buffer(char* buf, size_t len){
+    return strncmp(printBuffer, buf, len);
+}
