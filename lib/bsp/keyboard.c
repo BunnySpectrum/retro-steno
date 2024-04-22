@@ -45,7 +45,7 @@ void print_keyboard_state(Logger_s logger, MPKeyboard_t mp){
     rs_log(logger, " %c ", (mp.data.keyMask & (1<<KEY_INDEX_D)) > 0 ? '*' : '.');
     rs_log(logger, "\n");
 
-    rs_log(logger, " . ");
+    rs_log(logger, "   ");
     rs_log(logger, " %c ", (mp.data.keyMask & (1<<KEY_INDEX_K)) > 0 ? '*' : '.');
     rs_log(logger, " %c ", (mp.data.keyMask & (1<<KEY_INDEX_W)) > 0 ? '*' : '.');
     rs_log(logger, " %c ", (mp.data.keyMask & (1<<KEY_INDEX_Ri)) > 0 ? '*' : '.');

@@ -30,6 +30,7 @@ void init_check_buffer(uint32_t keyMask){
     checkBuffer[0*31 + 4*KEYBOARD_CHAR_WIDTH + 1] = '|';
 
     // Blank spots in 3rd line
+    checkBuffer[2*31 + 0*KEYBOARD_CHAR_WIDTH + 1] = ' ';
     checkBuffer[2*31 + 4*KEYBOARD_CHAR_WIDTH + 1] = ' ';
 
     // Blank spots in 4th line
@@ -82,14 +83,15 @@ void test_print_keyboard_state(void) {
     */
     // init_check_buffer(1<<9);
     // for (int i = 0; i < 0x3FFFFF; i++)
-    for (int i = 0; i < 3; i++)
+    uint32_t testKeys[] = {0x3FFFFF, 0x1, 0x3, 0x5, 0x70, 0x90, 0x100, 0x130};
+    for (int i = 0; i < 8; i++)
     {
-        kb.data.keyMask = i;
+        kb.data.keyMask = testKeys[i];
         init_check_buffer(kb.data.keyMask);
         start_log_buf();
         print_keyboard_state(logger, kb);
-        dump_buffer();
-        dump_check_buf();
-        printf("Validate: %d\n", compare_buffer(checkBuffer, KEYBOARD_LINE_COUNT * KEYBOARD_LINE_LENGTH));
+        // dump_buffer();
+        // dump_check_buf();
+        TEST_ASSERT_EQUAL(0, compare_buffer(checkBuffer, KEYBOARD_LINE_COUNT * KEYBOARD_LINE_LENGTH));
     }
 }
