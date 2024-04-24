@@ -6,6 +6,8 @@
 #include "utils/rs_codes.h"
 #include "app/model_point.h"
 #include "bsp/exp.h"
+#include "hw/drv_gpio.h"
+#include "bsp/pinmap.h"
 
 typedef struct MPKeyboardData{
     uint32_t keyMask;
@@ -16,15 +18,30 @@ typedef struct MPKeyboard{
     MPKeyboardData_t data;
 } MPKeyboard_t;
 
+
+typedef enum PinInputFSM{
+    RS_PIN_STATE_HIGH = 0,
+    RS_PIN_STATE_FALL = 1,
+    RS_PIN_STATE_LOW = 2,
+    RS_PIN_STATE_RISE = 3
+} PinInputFSM_e;
+
+#define TASK_KEY_DEBOUNCE_PERIOD_MS 25
+
 void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t subscriberCount);
 
 
-void keyboard_init();
-void get_pressed_keys();
+void cmd_get_pressed_keys();
 RS_CODE_e read_keys(uint8_t i2cID, uint8_t* keys, MPKeyboard_t* mp);
 
 void print_keyboard_state(Logger_s logger, MPKeyboard_t mp);
 void send_keyboard_state(MPKeyboard_t mp);
+
+void keyboard_init(void (*callback)(unsigned int, uint32_t), Logger_s logger, MPKeyboard_t *mp, uint8_t i2cID);
+void handle_key_debounce();
+void enable_stream_mode();
+void disable_stream_mode();
+void toggle_stream_mode();
 
 #define KEY_INDEX_Si 0
 #define KEY_INDEX_Ti 1

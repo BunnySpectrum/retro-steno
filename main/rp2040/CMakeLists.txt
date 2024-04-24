@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
     drv_i2c_rp2040.c
     drv_gpio_rp2040.c
     drv_time_rp2040.c
+    drv_stdio_rp2040.c
     ../../lib/utils/rs_stdio.c
     ../../lib/utils/rs_time.c
     ../../lib/bsp/bsp.c
@@ -28,6 +29,7 @@ add_executable(${PROJECT_NAME}
     ../../lib/app/alert.c
     ../../lib/app/hbt.c
     ../../lib/app/cli.c
+    ../../lib/app/cmd.c
 )
 
 # pull in common dependencies

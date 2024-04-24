@@ -5,3 +5,4 @@
 #define BLINK_ERROR_COUNT 2
 
 void alert_error();
+void print_build_time(void);

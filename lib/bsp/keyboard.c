@@ -3,6 +3,12 @@
 // #include "pico/stdio.h"
 // #include "tusb.h"
 
+PinInputFSM_e keyInputState;
+void (*pressCallback)(unsigned int, uint32_t);
+uint8_t streamMode;
+Logger_s keyboardLogger;
+MPKeyboard_t *MPKeyboard;
+uint8_t i2cID;
 
 void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t subscriberCount){
    mp_init(&kb->base, subscriberList, subscriberCount, sizeof(MPKeyboardData_t));
@@ -11,12 +17,75 @@ void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t 
 
 }
 
-void keyboard_init(){
+void keyboard_init(void (*callback)(unsigned int, uint32_t), Logger_s logger, MPKeyboard_t *mp, uint8_t i2cID){
+    keyInputState = RS_PIN_STATE_HIGH; 
+    pressCallback = callback;
+    streamMode = 0;
+    keyboardLogger = logger;
+    MPKeyboard = mp;
+    i2cID = i2cID;
     return;
 }
 
-void get_pressed_keys(){
-    return;
+void enable_stream_mode(){
+    streamMode = 1;
+}
+
+void disable_stream_mode(){
+    streamMode = 0;
+}
+
+void toggle_stream_mode(){
+    streamMode ^= 0x1;
+}
+
+void cmd_get_pressed_keys(){
+    uint8_t keyState[4];
+    if(RS_CODE_OK == read_keys(i2cID, keyState, MPKeyboard)){
+        printf(" \"read keys\", \"value\": ");
+        printf("[%#x, %#x, %#x, %#x, ", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
+        printf("%#lx]", MPKeyboard->data.keyMask);
+        printf("\n");
+        print_keyboard_state(keyboardLogger, *MPKeyboard);
+    }
+}
+
+void handle_key_debounce(){
+    RS_BOOL_e pinState = RS_FALSE;
+    uint8_t keyState[4];
+
+    switch (keyInputState){
+        case RS_PIN_STATE_HIGH:
+            rs_gpio_get(PIN_KEY_ENTER, &pinState);
+            if(pinState == 0){ // we are now low
+                keyInputState = RS_PIN_STATE_LOW;
+                // printf("Pressed: %d\n", pressCounter++);
+                rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, RS_GPIO_IRQ_EDGE_RISE, RS_TRUE, pressCallback);
+                if(RS_CODE_OK == read_keys(I2C_ID, keyState, MPKeyboard)){
+                    if(streamMode != 0){
+                        send_keyboard_state(*MPKeyboard);
+                    }else{
+                        // printf("%#x, %#x, %#x, %#x\n", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
+                        // printf("\t%#lx\n", mpKeyboard.data.keyMask);
+                        print_keyboard_state(keyboardLogger, *MPKeyboard);
+                    }
+                }
+            }
+            //else this was a bounce
+            break;
+
+        case RS_PIN_STATE_LOW:
+            rs_gpio_get(PIN_KEY_ENTER, &pinState);
+            if(pinState == 1){ // we are now high
+                keyInputState = RS_PIN_STATE_HIGH;
+                // printf("Released: %d\n", releaseCounter++);
+                rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, RS_GPIO_IRQ_EDGE_FALL, RS_TRUE, pressCallback);
+            }
+            //else this was a bounce
+            break;
+        
+    }
+    
 }
 
 

@@ -10,6 +10,15 @@
             "problemMatcher": []
         },
         {
+            "label": "app-time",
+            "type": "shell",
+            "windows":{"command": "(gci lib/app/alert.c).LastWriteTime = Get-Date"},
+            "osx":{"command": "touch lib/app/alert.c"},
+            "linux":{"command": "touch lib/app/alert.c"},
+            "problemMatcher": [],
+            "dependsOn": []
+        },
+        {
             "label": "app-load",
             "type": "shell",
             "command": "picotool reboot -f -u; sleep 2; picotool load build/rp2040/app_rp2040_metro.bin; picotool reboot",
@@ -26,7 +35,8 @@
             "label": "app-build",
             "type": "shell",
             "command": "cmake --build build/rp2040",
-            "problemMatcher": []
+            "problemMatcher": [],
+            "dependsOn": ["app-time"]
         },
         {
             "label": "app-rebuild",

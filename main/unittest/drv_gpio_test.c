@@ -23,6 +23,11 @@ RS_CODE_e rs_gpio_put(uint32_t id, RS_BOOL_e val){
     return RS_CODE_OK;
 }
 
+RS_CODE_e rs_gpio_get(uint32_t id, RS_BOOL_e *val){
+    *val = 0;
+    return RS_CODE_OK;
+}
+
 // opaque value type to pass to HAL
 RS_CODE_e rs_gpio_set_function(uint32_t id, uint32_t val){
     printf("Set function gpio %d: %d\n", id, val);

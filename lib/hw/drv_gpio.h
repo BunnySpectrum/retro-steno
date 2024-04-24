@@ -37,7 +37,10 @@ typedef enum{
 //     GPIO_IRQ_EDGE_RISE = 0x8u,
 // };
 typedef enum{
-    RS_GPIO_IRQ_EDGE_FALL = 0x4,
+    RS_GPIO_IRQ_LEVEL_LOW = 0x1u,
+    RS_GPIO_IRQ_LEVEL_HIGH = 0x2u,
+    RS_GPIO_IRQ_EDGE_FALL = 0x4u,
+    RS_GPIO_IRQ_EDGE_RISE = 0x8u
 }RS_GPIO_IRQ_e;
 
 
@@ -58,6 +61,8 @@ RS_CODE_e rs_gpio_set_direction(uint32_t id, RS_GPIO_DIR_e val);
 
 // True to set, False to clear
 RS_CODE_e rs_gpio_put(uint32_t id, RS_BOOL_e val);
+
+RS_CODE_e rs_gpio_get(uint32_t id, RS_BOOL_e *val);
 
 // opaque value type to pass to HAL
 RS_CODE_e rs_gpio_set_function(uint32_t id, uint32_t val);
