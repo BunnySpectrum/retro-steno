@@ -8,7 +8,7 @@
 #define I2C_INSTANCE_COUNT 2
 static i2c_inst_t *i2c_instances[I2C_INSTANCE_COUNT] = {&i2c0_inst, &i2c1_inst};
 
-RSCode_e rs_i2c_init(uint8_t id, uint32_t speed){
+RS_CODE_e rs_i2c_init(uint8_t id, uint32_t speed){
     uint32_t actualSpeed;
 
     if (id > I2C_INSTANCE_COUNT-1){
@@ -24,7 +24,7 @@ RSCode_e rs_i2c_init(uint8_t id, uint32_t speed){
 
 }
 
-RSCode_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop){
+RS_CODE_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop){
     resp->rc = RS_CODE_ERR;
 
     if (id > I2C_INSTANCE_COUNT-1){

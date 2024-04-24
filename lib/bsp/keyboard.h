@@ -3,6 +3,7 @@
 
 #include "utils/rs_stdint.h"
 #include "utils/rs_stdio.h"
+#include "utils/rs_codes.h"
 #include "app/model_point.h"
 #include "bsp/exp.h"
 
@@ -20,6 +21,7 @@ void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t 
 
 void keyboard_init();
 void get_pressed_keys();
+RS_CODE_e read_keys(uint8_t i2cID, uint8_t* keys, MPKeyboard_t* mp);
 
 void print_keyboard_state(Logger_s logger, MPKeyboard_t mp);
 void send_keyboard_state(MPKeyboard_t mp);

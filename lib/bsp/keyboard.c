@@ -19,6 +19,89 @@ void get_pressed_keys(){
     return;
 }
 
+
+RS_CODE_e read_keys(uint8_t i2cID, uint8_t* keys, MPKeyboard_t* mp){
+    uint8_t i2cData;
+
+    i2cResponse_t scratch;
+    scratch.length = 1;
+    scratch.data = &i2cData;
+
+    keys[0] = 0;
+    keys[1] = 0;
+    keys[2] = 0;
+    keys[3] = 0;
+
+    if (rs_i2c_read(i2cID, EXP_0, &scratch, 0) != RS_CODE_OK){
+        printf("err addr %x\n", EXP_0);
+        return RS_CODE_ERR;
+    }else{
+        keys[0] = *(scratch.data);
+    }
+
+    if (rs_i2c_read(i2cID, EXP_1, &scratch, 0) != RS_CODE_OK){
+        printf("err addr %x\n", EXP_1);
+        return RS_CODE_ERR;
+    }else{
+        keys[1] = *(scratch.data);
+        // data |= (uint32_t)(*(scratch.data)) << 8;
+    }
+
+    if (rs_i2c_read(i2cID, EXP_2, &scratch, 0) != RS_CODE_OK){
+        printf("err addr %x\n", EXP_2);
+        return RS_CODE_ERR;
+    }else{
+        keys[2] = *(scratch.data);
+        // data |= (uint32_t)(*(scratch.data)) << 16;
+    }
+
+    if (rs_i2c_read(i2cID, EXP_3, &scratch, 0) != RS_CODE_OK){
+        printf("err addr %x\n", EXP_3);
+        return RS_CODE_ERR;
+    }else{
+        keys[3] = *(scratch.data);
+        // data |= (uint32_t)(*(scratch.data)) << 24;
+    }
+
+    mp->data.keyMask = 0;
+    mp->data.keyMask |= ((keys[EXP_KEY_Si_CHIP]>>EXP_KEY_Si_INDEX) & 0x1) << KEY_INDEX_Si;
+    mp->data.keyMask |= ((keys[EXP_KEY_Ti_CHIP]>>EXP_KEY_Ti_INDEX) & 0x1) << KEY_INDEX_Ti;
+    mp->data.keyMask |= ((keys[EXP_KEY_K_CHIP]>>EXP_KEY_K_INDEX) & 0x1) << KEY_INDEX_K;
+    mp->data.keyMask |= ((keys[EXP_KEY_Pi_CHIP]>>EXP_KEY_Pi_INDEX) & 0x1) << KEY_INDEX_Pi;
+    mp->data.keyMask |= ((keys[EXP_KEY_W_CHIP]>>EXP_KEY_W_INDEX) & 0x1) << KEY_INDEX_W;
+    mp->data.keyMask |= ((keys[EXP_KEY_H_CHIP]>>EXP_KEY_H_INDEX) & 0x1) << KEY_INDEX_H;
+    mp->data.keyMask |= ((keys[EXP_KEY_Ri_CHIP]>>EXP_KEY_Ri_INDEX) & 0x1) << KEY_INDEX_Ri;
+    mp->data.keyMask |= ((keys[EXP_KEY_A_CHIP]>>EXP_KEY_A_INDEX) & 0x1) << KEY_INDEX_A;
+    mp->data.keyMask |= ((keys[EXP_KEY_O_CHIP]>>EXP_KEY_O_INDEX) & 0x1) << KEY_INDEX_O;
+    mp->data.keyMask |= ((keys[EXP_KEY_STAR_CHIP]>>EXP_KEY_STAR_INDEX) & 0x1) << KEY_INDEX_STAR;
+    mp->data.keyMask |= ((keys[EXP_KEY_E_CHIP]>>EXP_KEY_E_INDEX) & 0x1) << KEY_INDEX_E;
+    mp->data.keyMask |= ((keys[EXP_KEY_U_CHIP]>>EXP_KEY_U_INDEX) & 0x1) << KEY_INDEX_U;
+    mp->data.keyMask |= ((keys[EXP_KEY_F_CHIP]>>EXP_KEY_F_INDEX) & 0x1) << KEY_INDEX_F;
+    mp->data.keyMask |= ((keys[EXP_KEY_Rf_CHIP]>>EXP_KEY_Rf_INDEX) & 0x1) << KEY_INDEX_Rf;
+    mp->data.keyMask |= ((keys[EXP_KEY_Pf_CHIP]>>EXP_KEY_Pf_INDEX) & 0x1) << KEY_INDEX_Pf;
+    mp->data.keyMask |= ((keys[EXP_KEY_B_CHIP]>>EXP_KEY_B_INDEX) & 0x1) << KEY_INDEX_B;
+    mp->data.keyMask |= ((keys[EXP_KEY_L_CHIP]>>EXP_KEY_L_INDEX) & 0x1) << KEY_INDEX_L;
+    mp->data.keyMask |= ((keys[EXP_KEY_G_CHIP]>>EXP_KEY_G_INDEX) & 0x1) << KEY_INDEX_G;
+    mp->data.keyMask |= ((keys[EXP_KEY_Tf_CHIP]>>EXP_KEY_Tf_INDEX) & 0x1) << KEY_INDEX_Tf;
+    mp->data.keyMask |= ((keys[EXP_KEY_Sf_CHIP]>>EXP_KEY_Sf_INDEX) & 0x1) << KEY_INDEX_Sf;
+    mp->data.keyMask |= ((keys[EXP_KEY_D_CHIP]>>EXP_KEY_D_INDEX) & 0x1) << KEY_INDEX_D;
+    mp->data.keyMask |= ((keys[EXP_KEY_Z_CHIP]>>EXP_KEY_Z_INDEX) & 0x1) << KEY_INDEX_Z;
+    mp->data.keyMask |= ((keys[EXP_KEY_NUM_CHIP]>>EXP_KEY_NUM_INDEX) & 0x1) << KEY_INDEX_NUM;
+
+    return RS_CODE_OK;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 void print_keyboard_state(Logger_s logger, MPKeyboard_t mp){
 
     rs_log(logger, " . ");
