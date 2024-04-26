@@ -50,6 +50,7 @@ extern void (*cmd_cb_info)(void);
 extern void (*cmd_cb_stream)(void);
 extern void (*cmd_cb_read)(void);
 extern void (*cmd_a)(void);
+extern void (*cmd_b)(void);
 
 #include "hardware/spi.h"
 void test_disp_spi(){
@@ -83,6 +84,11 @@ void test_disp_spi(){
     printf("\n");
 }
 
+void test_time_tick(){
+    int32_t tick = (int32_t)to_ms_since_boot(get_absolute_time());
+    printf("Tick: %d.\n", tick);
+}
+
 int main() {
 
     // Set up printer
@@ -95,6 +101,7 @@ int main() {
     cmd_cb_stream = toggle_stream_mode;
     cmd_cb_read = cmd_get_pressed_keys;
     cmd_a = test_disp_spi;
+    cmd_b = test_time_tick;
 
     // Init systems
     bsp_gpio_init(gpio_callback);

@@ -6,5 +6,6 @@ extern void (*cmd_cb_info)(void);
 extern void (*cmd_cb_stream)(void);
 extern void (*cmd_cb_read)(void);
 extern void (*cmd_a)(void);
+extern void (*cmd_b)(void);
 
 #endif

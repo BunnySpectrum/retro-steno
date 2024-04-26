@@ -7,11 +7,11 @@ static Logger_s displayPrinter;
 static uint8_t displayID;
 
 int32_t rs_st7735_init(){
-    return 1;
+    return ST7735_OK;
 }
 
 int32_t rs_st7735_deinit(){
-    return 2;
+    return ST7735_OK;
 }
 
 int32_t rs_st7735_writereg(uint8_t reg, uint8_t *data, uint32_t length){
@@ -36,7 +36,7 @@ int32_t rs_st7735_writereg(uint8_t reg, uint8_t *data, uint32_t length){
     }
 
     // rs_log(displayPrinter, "Write reg: reg %#x\n", reg);
-    return resp2.length;
+    return ST7735_OK;
 }
 
 int32_t rs_st7735_readreg(uint8_t reg, uint8_t *data){
@@ -60,7 +60,7 @@ int32_t rs_st7735_readreg(uint8_t reg, uint8_t *data){
     *data = resp2.data[0];
 
     rs_log(displayPrinter, "Read reg: reg %#x, data %#d\n", reg, resp2.data[0]);
-    return 4;
+    return ST7735_OK;
 }
 
 int32_t rs_st7735_senddata(uint8_t *data, uint32_t length){
@@ -76,11 +76,11 @@ int32_t rs_st7735_senddata(uint8_t *data, uint32_t length){
 
 
     // rs_log(displayPrinter, "Send data: data[0] %#x, length %d.\n", data[0], length);
-    return resp2.length;
+    return ST7735_OK;
 }
 
 int32_t rs_st7735_recvdata(uint8_t *data, uint32_t length){
-    return 6;
+    return ST7735_ERROR;
 }
 
 int32_t rs_st7735_gettick(){
@@ -120,7 +120,7 @@ void rs_st7735_setpixel(uint32_t xPos, uint32_t yPos, uint32_t color){
 #define DISP_WIDTH 130
 #define DISP_HEIGHT 132
 
-void display_init(uint8_t spiID){
+void display_init_manual(uint8_t spiID){
     ST7735_Object_t obj;
     ST7735_IO_t io;
 
@@ -289,5 +289,122 @@ void display_init(uint8_t spiID){
 }
 
 
+
+void display_init_stm32(uint8_t spiID){
+    ST7735_Object_t obj;
+    ST7735_IO_t io;
+
+    displayID = spiID;
+
+    io.Init = rs_st7735_init; 
+    io.DeInit = rs_st7735_deinit;
+    io.Address = 1;
+    io.WriteReg = rs_st7735_writereg;
+    io.ReadReg = rs_st7735_readreg;
+    io.SendData = rs_st7735_senddata;
+    io.RecvData = rs_st7735_recvdata;
+    io.GetTick = rs_st7735_gettick;
+
+
+    int32_t result;
+    result = ST7735_RegisterBusIO(&obj, &io);
+    rs_log(displayPrinter, "Register bus io: %d.\n", result);
+
+
+    ST7735_Init(&obj, 0x5, 0);
+
+    // set window: 0, width, 0, height
+    uint8_t data0[2] = {0x00, 0x00};
+    uint8_t red[2] = {0x00, 0xFF};
+    uint8_t blue[2] = {0xF0, 0x00};
+    uint8_t black[2] = {0x00, 0x00};
+    uint8_t white[2] = {0xFF, 0xFF};
+    uint8_t width[2] = {0x00, DISP_WIDTH};
+    uint8_t height[2] = {0x00, DISP_HEIGHT};
+
+
+    uint32_t count;
+
+    // fill full RAM with black
+    rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    count = ST7735_WIDTH * ST7735_HEIGHT;
+    while(count--){
+        rs_st7735_senddata(black, 2);
+    }
+
+    // sleep_ms(200);
+    uint8_t pixel;
+
+
+    // pixel = 10;
+    // rs_st7735_setwindow(pixel, pixel, pixel, pixel);
+    // rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    // count = 1;
+    // while(count--){
+    //     rs_st7735_senddata(white, 2);
+    // }
+
+    uint8_t originX, originY;
+    originX = 2;
+    originY = 3;
+
+    // Top left
+    ST7735_SetCursor(&obj, originX, originY);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(red, 2);
+    }
+    
+    // Top right
+    ST7735_SetCursor(&obj, originX+127, originY);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(red, 2);
+    }
+
+    // bottom right
+    ST7735_SetCursor(&obj, originX+127, originY+127);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(red, 2);
+    }
+
+    // bottom left
+    ST7735_SetCursor(&obj, originX, originY+127);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(red, 2);
+    }
+
+
+
+
+    ST7735_SetCursor(&obj, originX + 10, originY + 10);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(white, 2);
+    }
+
+    uint16_t color = 0xE007;
+    ST7735_SetPixel(&obj, originX+5, originY+5, color);
+    // ST7735_SetCursor(&obj, originX + 5, originY + 5);
+    // st7735_send_data(&obj.Ctx, (uint8_t*)&color, 2);
+    // count = 1;
+    // while(count--){
+    //     rs_st7735_senddata(white, 2);
+    // }
+
+    ST7735_FillRect(&obj, originX+10, originY+10, 10, 10, color);
+
+    rs_log(displayPrinter, "Init done");
+
+}
+
+
+
+
+void display_init(uint8_t spiID){
+    display_init_stm32(spiID);
+}
 
 #endif
