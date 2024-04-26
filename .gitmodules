@@ -1,3 +1,6 @@
 [submodule "Unity"]
 	path = external/Unity
 	url = https://github.com/ThrowTheSwitch/Unity.git
+[submodule "external/stm32-st7735"]
+	path = external/stm32-st7735
+	url = https://github.com/STMicroelectronics/stm32-st7735.git

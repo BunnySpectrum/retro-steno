@@ -154,7 +154,7 @@ void display_init(uint8_t spiID){
     rs_st7735_writereg(ST7735_COLOR_MODE, &data, 1);
     sleep_ms(10);
 
-    data = 0xA0;
+    data = 0x00;
     rs_st7735_writereg(ST7735_MADCTL, &data, 1);
     sleep_ms(10);
 
@@ -216,14 +216,39 @@ void display_init(uint8_t spiID){
     while(count--){
         rs_st7735_senddata(white, 2);
     }
-
-    pixel = 2;
-    rs_st7735_setwindow(3, 3, pixel, pixel);
+    
+    pixel = 128;
+    rs_st7735_setwindow(129, 129, 128, 128);
     rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
     count = 1;
     while(count--){
         rs_st7735_senddata(white, 2);
     }
+    
+    // lower right
+    rs_st7735_setwindow(2, 2, 1, 1);
+    rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(white, 2);
+    }
+
+    rs_st7735_setwindow(2, 2, 128, 128);
+    rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(white, 2);
+    }
+
+    rs_st7735_setwindow(129, 129, 1, 1);
+    rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    count = 1;
+    while(count--){
+        rs_st7735_senddata(white, 2);
+    }
+
+
+
 
     rs_st7735_setwindow(10, 100, 10, 10);
     rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
@@ -232,6 +257,12 @@ void display_init(uint8_t spiID){
         rs_st7735_senddata(red, 2);
     }
 
+    rs_st7735_setwindow(10, 100, 100, 100);
+    rs_st7735_writereg(ST7735_WRITE_RAM, NULL, 0);
+    count = 45;
+    while(count--){
+        rs_st7735_senddata(red, 2);
+    }
     // result = ST7735_FillRect(&obj, 0, 0, ST7735_WIDTH, ST7735_HEIGHT, 0xFFFF);
     // rs_log(displayPrinter, "Fill rect: %d", result);
 
