@@ -22,6 +22,15 @@
 #define SDA_PIN 16 //SDA0
 #define SCL_PIN 17 //SCL0
 #define I2C_ID 0
+#define SPI_ID_DISPLAY 1
+#define SPI_DISP_SCK_PIN 26
+#define SPI_DISP_MOSI_PIN 27
+#define SPI_DISP_MISO_PIN 28
+#define SPI_DISP_CS_PIN 29
+#define DISP_RST_PIN 24
+#define DISP_DC_PIN 2
+#define SPI_DISP_CARD_CS_PIN 25
+#define DISP_LIGHT_PIN 3
 
 #elif (BOARD == 2)
 #error "KB2040 not fully supported yet"

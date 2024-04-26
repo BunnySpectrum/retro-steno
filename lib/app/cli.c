@@ -3,6 +3,7 @@
 extern void (*cmd_cb_info)(void);
 extern void (*cmd_cb_stream)(void);
 extern void (*cmd_cb_read)(void);
+extern void (*cmd_a)(void);
 
 void cli_init(){
     ;
@@ -25,6 +26,10 @@ void cli_process(){
 
             case 'i':
                 cmd_cb_info();
+                break;
+
+            case 'a':
+                cmd_a();
                 break;
 
         }

@@ -2,6 +2,7 @@
 
 #include "pico/stdio.h"
 #include "pico/stdio_usb.h"
+#include "hardware/pwm.h"
 
 RS_CODE_e bsp_gpio_init(void (*gpio_callback)(unsigned int, uint32_t)){
     RS_GPIO_Config_s ledConfig = {
@@ -51,5 +52,48 @@ RS_CODE_e bsp_i2c_init(uint32_t i2cID){
     rs_gpio_set_function(SCL_PIN, RS_GPIO_FUNC_I2C);
     rs_gpio_pull_up(SDA_PIN);
     rs_gpio_pull_up(SCL_PIN);
+
+    return RS_CODE_OK;
+}
+
+RS_BOOL_e bsp_spi_init(uint32_t spiID){
+    rs_spi_init(spiID, 4000*1000); // 4 MHz clock
+    rs_gpio_set_function(SPI_DISP_SCK_PIN, RS_GPIO_FUNC_SPI);
+    rs_gpio_set_function(SPI_DISP_MOSI_PIN, RS_GPIO_FUNC_SPI);
+    rs_gpio_set_function(SPI_DISP_MISO_PIN, RS_GPIO_FUNC_SPI);
+    // rs_gpio_set_function(SPI_DISP_CS_PIN, RS_GPIO_FUNC_SPI);
+
+    rs_gpio_init(SPI_DISP_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP_CS_PIN, 1);
+
+    rs_gpio_init(SPI_DISP_CARD_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP_CARD_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP_CARD_CS_PIN, 1);
+
+    spiResponse_t resp;
+    rs_spi_mode(&resp, spiID, 8, RS_FALSE, RS_FALSE, RS_TRUE);
+
+
+
+    return RS_CODE_OK;
+}
+
+RS_BOOL_e bsp_display_init(){
+    rs_gpio_init(DISP_RST_PIN, NULL);
+    rs_gpio_set_direction(DISP_RST_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP_RST_PIN, 1);
+    
+    rs_gpio_init(DISP_DC_PIN, NULL);
+    rs_gpio_set_direction(DISP_DC_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP_DC_PIN, 0);
+    
+    rs_gpio_set_function(DISP_LIGHT_PIN, RS_GPIO_FUNC_PWM);
+    unsigned int sliceNum = pwm_gpio_to_slice_num(DISP_LIGHT_PIN);
+
+    pwm_set_wrap(sliceNum, 12500);
+    pwm_set_gpio_level(DISP_LIGHT_PIN, 3125*2);
+    pwm_set_enabled(sliceNum, 1);
+
 
 }

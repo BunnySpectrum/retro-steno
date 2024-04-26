@@ -13,9 +13,11 @@ pico_sdk_init()
 
 
 include_directories(../../lib)
+include_directories(../../external/stm32-st7735)
 add_executable(${PROJECT_NAME}
     main.c
     drv_i2c_rp2040.c
+    drv_spi_rp2040.c
     drv_gpio_rp2040.c
     drv_time_rp2040.c
     drv_stdio_rp2040.c
@@ -25,15 +27,18 @@ add_executable(${PROJECT_NAME}
     ../../lib/bsp/scheduler.c
     ../../lib/bsp/led.c
     ../../lib/bsp/exp.c
+    ../../lib/bsp/display.c
     ../../lib/bsp/keyboard.c
     ../../lib/app/alert.c
     ../../lib/app/hbt.c
     ../../lib/app/cli.c
     ../../lib/app/cmd.c
+    ../../external/stm32-st7735/st7735.c
+    ../../external/stm32-st7735/st7735_reg.c
 )
 
 # pull in common dependencies
-target_link_libraries(${PROJECT_NAME} pico_stdlib hardware_i2c)
+target_link_libraries(${PROJECT_NAME} pico_stdlib hardware_i2c hardware_spi hardware_pwm)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(${PROJECT_NAME})

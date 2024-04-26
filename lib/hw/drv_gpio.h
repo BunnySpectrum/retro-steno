@@ -25,7 +25,9 @@ typedef enum{
 //     GPIO_FUNC_NULL = 0x1f,
 // };
 typedef enum{
+    RS_GPIO_FUNC_SPI = 1,
     RS_GPIO_FUNC_I2C = 3,
+    RS_GPIO_FUNC_PWM = 4,
     RS_GPIO_FUNC_SIO = 5,
 }RS_GPIO_FUNC_e;
 
