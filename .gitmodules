@@ -4,3 +4,4 @@
 [submodule "external/stm32-st7735"]
 	path = external/stm32-st7735
 	url = https://github.com/BunnySpectrum/stm32-st7735.git
+	branch = adafruit-support
