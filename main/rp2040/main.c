@@ -14,6 +14,7 @@
 #include "hw/drv_gpio.h"
 #include "bsp/keyboard.h"
 #include "utils/rs_time.h"
+#include "utils/rs_colors.h"
 #include "app/hbt.h"
 #include "app/cli.h"
 
@@ -77,8 +78,8 @@ void test_disp_spi(){
     // rs_gpio_put(DISP_DC_PIN, 0);
     // printf("Read ID: rc = %d, data = %d\n", resp2.rc, resp2.data[0]);
 
-    display_init(SPI_ID_DISPLAY);
-
+    rs_st7735_fill_rect(0, 10, 10, 10, 10, RS_RGB565_WHITE);
+    rs_st7735_set_pixel(0, 15, 15, RS_RGB565_RED);
 
 
     printf("\n");
@@ -135,7 +136,7 @@ int main() {
     add_repeating_timer_ms(1, &task_period_update_1ms, NULL, &timer);
 
 
-    display_init(SPI_ID_DISPLAY);
+    display_init(SPI_ID_DISPLAY, 0);
 
     while (true) {
 

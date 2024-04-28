@@ -1,0 +1,29 @@
+#ifndef _RS_COLORS_H_
+#define _RS_COLORS_H_
+
+// https://chrishewett.com/blog/true-rgb565-colour-picker/
+typedef enum RS_RGB565{
+    RS_RGB565_BLACK = 0x0000,
+    RS_RGB565_WHITE = 0xFFFF,
+    RS_RGB565_RED = 0xF800,
+    RS_RGB565_YELLOW = 0xFFE0,
+    RS_RGB565_MAGENTA = 0xF81F,
+    RS_RGB565_GREEN = 0x07E0,
+    RS_RGB565_CYAN = 0x07FF,
+    RS_RGB565_BLUE = 0x001F,
+
+}RS_RGB565_e;
+
+typedef enum RS_RGB888{
+    RS_RGB888_BLACK = 0x000000,
+    RS_RGB888_WHITE = 0xFFFFFF,
+    RS_RGB888_RED = 0xFF0000,
+    RS_RGB888_YELLOW = 0xFFFF00,
+    RS_RGB888_MAGENTA = 0xFF00FF,
+    RS_RGB888_GREEN = 0x00FF00,
+    RS_RGB888_CYAN = 0x00FFFF,
+    RS_RGB888_BLUE = 0x0000FF,
+
+}RS_RGB888_e;
+
+#endif
