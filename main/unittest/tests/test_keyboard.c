@@ -44,7 +44,7 @@ void init_check_buffer(uint32_t keyMask){
     uint32_t bitTest = 0;
     uint32_t row, col;
     while(keyMask > 0){
-        if(keyMask & 0x1 != 0){
+        if( (keyMask & 0x1) != 0){
             row = idToRow[bitTest];
             col = idToCol[bitTest];
             checkBuffer[row*31 + col*KEYBOARD_CHAR_WIDTH + 1] = '*';

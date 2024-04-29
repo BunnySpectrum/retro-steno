@@ -44,7 +44,7 @@ void cmd_get_pressed_keys(){
     if(RS_CODE_OK == read_keys(i2cID, keyState, MPKeyboard)){
         printf(" \"read keys\", \"value\": ");
         printf("[%#x, %#x, %#x, %#x, ", keyState[0]&0xFF, keyState[1]&0x0F, keyState[2]&0x0E, keyState[3]&0xFF);
-        printf("%#lx]", MPKeyboard->data.keyMask);
+        printf("%#x]", MPKeyboard->data.keyMask);
         printf("\n");
         print_keyboard_state(keyboardLogger, *MPKeyboard);
     }
@@ -82,6 +82,8 @@ void handle_key_debounce(){
                 rs_gpio_set_irq_with_callback(PIN_KEY_ENTER, RS_GPIO_IRQ_EDGE_FALL, RS_TRUE, pressCallback);
             }
             //else this was a bounce
+            break;
+        default:
             break;
         
     }
