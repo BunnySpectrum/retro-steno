@@ -38,5 +38,7 @@ void display_init(uint8_t spiID, uint8_t driverID){
     // bottom left
     rs_st7735_set_pixel(driverID, originX, originY+127, RS_RGB565_WHITE);
 
+    rs_st7735_fill_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_MAGENTA);
+
 }
 
