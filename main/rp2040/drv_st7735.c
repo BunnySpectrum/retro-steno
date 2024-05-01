@@ -13,19 +13,19 @@ int32_t rs_st7735_writereg(uint8_t reg, uint8_t *data, uint32_t length){
     resp1.data = data1;
     resp1.length = 1;
 
-    rs_gpio_put(DISP_DC_PIN, 0);
-    rs_gpio_put(SPI_DISP_CS_PIN, 0);
+    rs_gpio_put(DISP0_DC_PIN, 0);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
     rs_spi_send_data(&resp1, SPI_ID_DISPLAY);
-    rs_gpio_put(SPI_DISP_CS_PIN, 1);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
     
     if(length > 0){
         resp2.data = data;
         resp2.length = length;
 
-        rs_gpio_put(DISP_DC_PIN, 1);
-        rs_gpio_put(SPI_DISP_CS_PIN, 0);
+        rs_gpio_put(DISP0_DC_PIN, 1);
+        rs_gpio_put(SPI_DISP0_CS_PIN, 0);
         rs_spi_send_data(&resp2, SPI_ID_DISPLAY);
-        rs_gpio_put(SPI_DISP_CS_PIN, 1);
+        rs_gpio_put(SPI_DISP0_CS_PIN, 1);
     }
 
     return ST7735_OK;
@@ -43,11 +43,11 @@ int32_t rs_st7735_readreg(uint8_t reg, uint8_t *data){
 
 
 
-    rs_gpio_put(DISP_DC_PIN, 0);
-    rs_gpio_put(SPI_DISP_CS_PIN, 0);
+    rs_gpio_put(DISP0_DC_PIN, 0);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
     rs_spi_send_data(&resp1, SPI_ID_DISPLAY);
     rs_spi_recv_data(&resp2, SPI_ID_DISPLAY, 0x0);
-    rs_gpio_put(SPI_DISP_CS_PIN, 1);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
 
     *data = resp2.data[0];
 
@@ -60,10 +60,10 @@ int32_t rs_st7735_senddata(uint8_t *data, uint32_t length){
     resp2.data = data;
     resp2.length = length;
 
-    rs_gpio_put(DISP_DC_PIN, 1);
-    rs_gpio_put(SPI_DISP_CS_PIN, 0);
+    rs_gpio_put(DISP0_DC_PIN, 1);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
     rs_spi_send_data(&resp2, SPI_ID_DISPLAY);
-    rs_gpio_put(SPI_DISP_CS_PIN, 1);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
 
 
     return ST7735_OK;
@@ -132,7 +132,7 @@ RS_CODE_e rs_st7735_init(uint8_t spiID, uint8_t driverID){
 
 }
 
-RS_CODE_e rs_st7735_set_pixel(uint8_t driverID, uint32_t x, uint32_t y, RS_RGB565_e color){
+RS_CODE_e rs_st7735_draw_pixel(uint8_t driverID, uint32_t x, uint32_t y, RS_RGB565_e color){
     if(driverID >= MAX_NUM_DISPLAY_DRIVERS){
         return RS_CODE_ERR;
     }
@@ -143,7 +143,7 @@ RS_CODE_e rs_st7735_set_pixel(uint8_t driverID, uint32_t x, uint32_t y, RS_RGB56
 }
 
 
-RS_CODE_e rs_st7735_fill_rect(uint8_t driverID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e color){
+RS_CODE_e rs_st7735_draw_rect(uint8_t driverID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e color){
     if(driverID >= MAX_NUM_DISPLAY_DRIVERS){
         return RS_CODE_ERR;
     }

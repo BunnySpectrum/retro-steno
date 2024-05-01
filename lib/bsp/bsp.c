@@ -63,13 +63,22 @@ RS_BOOL_e bsp_spi_init(uint32_t spiID){
     rs_gpio_set_function(SPI_DISP_MISO_PIN, RS_GPIO_FUNC_SPI);
     // rs_gpio_set_function(SPI_DISP_CS_PIN, RS_GPIO_FUNC_SPI);
 
-    rs_gpio_init(SPI_DISP_CS_PIN, NULL);
-    rs_gpio_set_direction(SPI_DISP_CS_PIN, RS_GPIO_OUTPUT);
-    rs_gpio_put(SPI_DISP_CS_PIN, 1);
+    rs_gpio_init(SPI_DISP0_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP0_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
 
-    rs_gpio_init(SPI_DISP_CARD_CS_PIN, NULL);
-    rs_gpio_set_direction(SPI_DISP_CARD_CS_PIN, RS_GPIO_OUTPUT);
-    rs_gpio_put(SPI_DISP_CARD_CS_PIN, 1);
+    rs_gpio_init(SPI_DISP1_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP1_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP1_CS_PIN, 1);
+
+
+    rs_gpio_init(SPI_DISP0_CARD_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP0_CARD_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP0_CARD_CS_PIN, 1);
+    
+    rs_gpio_init(SPI_DISP1_CARD_CS_PIN, NULL);
+    rs_gpio_set_direction(SPI_DISP1_CARD_CS_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(SPI_DISP1_CARD_CS_PIN, 1);
 
     spiResponse_t resp;
     rs_spi_mode(&resp, spiID, 8, RS_FALSE, RS_FALSE, RS_TRUE);
@@ -80,20 +89,38 @@ RS_BOOL_e bsp_spi_init(uint32_t spiID){
 }
 
 RS_BOOL_e bsp_display_init(){
-    rs_gpio_init(DISP_RST_PIN, NULL);
-    rs_gpio_set_direction(DISP_RST_PIN, RS_GPIO_OUTPUT);
-    rs_gpio_put(DISP_RST_PIN, 1);
+    rs_gpio_init(DISP0_RST_PIN, NULL);
+    rs_gpio_set_direction(DISP0_RST_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP0_RST_PIN, 1);
     
-    rs_gpio_init(DISP_DC_PIN, NULL);
-    rs_gpio_set_direction(DISP_DC_PIN, RS_GPIO_OUTPUT);
-    rs_gpio_put(DISP_DC_PIN, 0);
-    
-    rs_gpio_set_function(DISP_LIGHT_PIN, RS_GPIO_FUNC_PWM);
-    unsigned int sliceNum = pwm_gpio_to_slice_num(DISP_LIGHT_PIN);
+    rs_gpio_init(DISP1_RST_PIN, NULL);
+    rs_gpio_set_direction(DISP1_RST_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP1_RST_PIN, 1);
 
+
+
+    rs_gpio_init(DISP0_DC_PIN, NULL);
+    rs_gpio_set_direction(DISP0_DC_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP0_DC_PIN, 0);
+    
+    rs_gpio_init(DISP1_DC_PIN, NULL);
+    rs_gpio_set_direction(DISP1_DC_PIN, RS_GPIO_OUTPUT);
+    rs_gpio_put(DISP1_DC_PIN, 0);
+    
+
+
+    unsigned int sliceNum;
+
+    rs_gpio_set_function(DISP0_LIGHT_PIN, RS_GPIO_FUNC_PWM);
+    sliceNum = pwm_gpio_to_slice_num(DISP0_LIGHT_PIN);
     pwm_set_wrap(sliceNum, 12500);
-    pwm_set_gpio_level(DISP_LIGHT_PIN, 3125*2);
+    pwm_set_gpio_level(DISP0_LIGHT_PIN, 3125*2);
     pwm_set_enabled(sliceNum, 1);
 
+    rs_gpio_set_function(DISP1_LIGHT_PIN, RS_GPIO_FUNC_PWM);
+    sliceNum = pwm_gpio_to_slice_num(DISP1_LIGHT_PIN);
+    pwm_set_wrap(sliceNum, 12500);
+    pwm_set_gpio_level(DISP1_LIGHT_PIN, 3125*2);
+    pwm_set_enabled(sliceNum, 1);
 
 }

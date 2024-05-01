@@ -26,11 +26,16 @@
 #define SPI_DISP_SCK_PIN 26
 #define SPI_DISP_MOSI_PIN 27
 #define SPI_DISP_MISO_PIN 28
-#define SPI_DISP_CS_PIN 29
-#define DISP_RST_PIN 24
-#define DISP_DC_PIN 2
-#define SPI_DISP_CARD_CS_PIN 25
-#define DISP_LIGHT_PIN 3
+#define SPI_DISP0_CS_PIN 29
+#define SPI_DISP1_CS_PIN 1
+#define DISP0_RST_PIN 24
+#define DISP1_RST_PIN 0
+#define DISP0_DC_PIN 2
+#define DISP1_DC_PIN 4
+#define SPI_DISP0_CARD_CS_PIN 25
+#define SPI_DISP1_CARD_CS_PIN 5
+#define DISP0_LIGHT_PIN 3
+#define DISP1_LIGHT_PIN 6
 
 #elif (BOARD == 2)
 #error "KB2040 not fully supported yet"

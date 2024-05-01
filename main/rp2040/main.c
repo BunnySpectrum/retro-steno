@@ -78,8 +78,8 @@ void test_disp_spi(){
     // rs_gpio_put(DISP_DC_PIN, 0);
     // printf("Read ID: rc = %d, data = %d\n", resp2.rc, resp2.data[0]);
 
-    rs_st7735_fill_rect(0, 10, 10, 10, 10, RS_RGB565_WHITE);
-    rs_st7735_set_pixel(0, 15, 15, RS_RGB565_RED);
+    rs_st7735_draw_rect(0, 10, 10, 10, 10, RS_RGB565_WHITE);
+    rs_st7735_draw_pixel(0, 15, 15, RS_RGB565_RED);
 
 
     printf("\n");
@@ -89,6 +89,11 @@ void test_time_tick(){
     int32_t tick = (int32_t)to_ms_since_boot(get_absolute_time());
     printf("Tick: %d.\n", tick);
 }
+
+DISP_CTX_s dispCtx0, dispCtx1;
+DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
+
+DISP_CTX_s *displayList[2];
 
 int main() {
 
@@ -114,13 +119,38 @@ int main() {
     // TBD how/if to move this out of main
     bi_decl(bi_2pins_with_func(SDA_PIN, SCL_PIN, RS_GPIO_FUNC_I2C));
     bi_decl(bi_3pins_with_func(SPI_DISP_MISO_PIN, SPI_DISP_MOSI_PIN, SPI_DISP_SCK_PIN, RS_GPIO_FUNC_SPI));
-    bi_decl(bi_1pin_with_name(SPI_DISP_CARD_CS_PIN, "SPI DISP CS"));
+    bi_decl(bi_1pin_with_name(SPI_DISP0_CS_PIN, "SPI DISP0 CS"));
+    bi_decl(bi_1pin_with_name(SPI_DISP1_CS_PIN, "SPI DISP1 CS"));
+    bi_decl(bi_1pin_with_name(SPI_DISP0_CARD_CS_PIN, "SPI DISP0 Card CS"));
+    bi_decl(bi_1pin_with_name(SPI_DISP1_CARD_CS_PIN, "SPI DISP1 Card CS"));
 
     // Init display hardware
+    displayList[0] = &dispCtx0;
+    dispCtx0.objID = 0;
+    dispCtx0.driverCtx = &st7735Ctx0;
+    
+    displayList[1] = &dispCtx1;
+    dispCtx1.objID = 1;
+    dispCtx1.driverCtx = &st7735Ctx1;
+
+    st7735Ctx0.cardCSPin = SPI_DISP0_CARD_CS_PIN;
+    st7735Ctx0.dispCSPin = SPI_DISP0_CS_PIN;
+    st7735Ctx0.lightPin = DISP0_LIGHT_PIN;
+    st7735Ctx0.resetPin = DISP0_RST_PIN;
+    st7735Ctx0.objID = 0;
+    st7735Ctx0.spiID = SPI_ID_DISPLAY;
+
+    st7735Ctx1.cardCSPin = SPI_DISP1_CARD_CS_PIN;
+    st7735Ctx1.dispCSPin = SPI_DISP1_CS_PIN;
+    st7735Ctx1.lightPin = DISP1_LIGHT_PIN;
+    st7735Ctx1.resetPin = DISP1_RST_PIN;
+    st7735Ctx1.objID = 1;
+    st7735Ctx1.spiID = SPI_ID_DISPLAY;
+
     bsp_display_init();
 
-    // display_init(SPI_ID_DISPLAY);
-    display_reset();
+    display_init(displayList[0], 1);
+    // display_reset();
 
     // Set up periodic tasks
     hbt_init();
@@ -136,7 +166,6 @@ int main() {
     add_repeating_timer_ms(1, &task_period_update_1ms, NULL, &timer);
 
 
-    display_init(SPI_ID_DISPLAY, 0);
 
     while (true) {
 

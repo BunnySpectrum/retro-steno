@@ -14,6 +14,15 @@
 
 #define MAX_NUM_DISPLAY_DRIVERS 2
 
+typedef struct DISP_CTX_ST7735{
+    uint32_t objID;
+    uint32_t dispCSPin;
+    uint32_t cardCSPin;
+    uint32_t resetPin;
+    uint32_t lightPin;
+    uint8_t spiID;
+}DISP_CTX_ST7735_s;
+
 
 RS_CODE_e rs_st7735_init(uint8_t spiID, uint8_t driverID);
 RS_CODE_e rs_st7735_draw_pixel(uint8_t driverID, uint32_t x, uint32_t y, RS_RGB565_e color);
