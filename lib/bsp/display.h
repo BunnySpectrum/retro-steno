@@ -20,7 +20,7 @@ typedef struct DISP_CTX{
     void* driverCtx;
 }DISP_CTX_s;
 
-void display_init(DISP_CTX_s *ctxList, uint32_t length);
+void display_init(DISP_CTX_s *ctxList[], uint32_t length);
 void set_logger_display(Logger_s printer);
 void display_reset();
 

@@ -134,22 +134,28 @@ int main() {
     dispCtx1.driverCtx = &st7735Ctx1;
 
     st7735Ctx0.cardCSPin = SPI_DISP0_CARD_CS_PIN;
+    st7735Ctx0.dispDCPin = DISP0_DC_PIN;
     st7735Ctx0.dispCSPin = SPI_DISP0_CS_PIN;
     st7735Ctx0.lightPin = DISP0_LIGHT_PIN;
     st7735Ctx0.resetPin = DISP0_RST_PIN;
-    st7735Ctx0.objID = 0;
+    st7735Ctx0.objID = dispCtx0.objID;
     st7735Ctx0.spiID = SPI_ID_DISPLAY;
+    st7735Ctx0.colorCoding = 0x5;
+    st7735Ctx0.orientation = 0;
 
     st7735Ctx1.cardCSPin = SPI_DISP1_CARD_CS_PIN;
+    st7735Ctx1.dispDCPin = DISP1_DC_PIN;
     st7735Ctx1.dispCSPin = SPI_DISP1_CS_PIN;
     st7735Ctx1.lightPin = DISP1_LIGHT_PIN;
     st7735Ctx1.resetPin = DISP1_RST_PIN;
-    st7735Ctx1.objID = 1;
+    st7735Ctx1.objID = dispCtx1.objID;
     st7735Ctx1.spiID = SPI_ID_DISPLAY;
+    st7735Ctx1.colorCoding = 0x5;
+    st7735Ctx1.orientation = 0;
 
     bsp_display_init();
 
-    display_init(displayList[0], 1);
+    display_init(displayList, 2);
     // display_reset();
 
     // Set up periodic tasks

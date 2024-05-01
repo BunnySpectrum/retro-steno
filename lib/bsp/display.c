@@ -18,13 +18,15 @@ void display_reset(){
 #define DISP_HEIGHT 132
 
 
-void z_display_init(uint8_t spiID, uint8_t driverID){
-    rs_st7735_init(spiID, driverID);
+void z_display_init(DISP_CTX_s *pCtx){
+    rs_st7735_init((DISP_CTX_ST7735_s*)pCtx->driverCtx);
     
     // FIXME: origin changes based on orientation 
     uint8_t originX, originY;
     originX = DISP_ORIGIN_X;
     originY = DISP_ORIGIN_Y;
+
+    uint32_t driverID = pCtx->objID;
 
     // Top left
     rs_st7735_draw_pixel(driverID, originX, originY, RS_RGB565_WHITE);
@@ -38,20 +40,23 @@ void z_display_init(uint8_t spiID, uint8_t driverID){
     // bottom left
     rs_st7735_draw_pixel(driverID, originX, originY+127, RS_RGB565_WHITE);
 
-    rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_BLUE);
-    // rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_RED);
+    if(driverID == 0){
+        rs_st7735_draw_rect(driverID, 10+originX + 48, 10+originY + 48, 32, 32, RS_RGB565_RED);
+        rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_BLUE);
+
+    }else{
+        rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_BLUE);
+        rs_st7735_draw_rect(driverID, 10+originX + 48, 10+originY + 48, 32, 32, RS_RGB565_RED);
+
+    }
 
 }
 
 
-void display_init(DISP_CTX_s *ctxList, uint32_t length){
+void display_init(DISP_CTX_s *ctxList[], uint32_t length){
     uint32_t idx;
-    DISP_CTX_s *dispCtx;
-    DISP_CTX_ST7735_s *driverCtx;
 
     for(idx = 0; idx<length; idx++){
-        dispCtx = &ctxList[idx];
-        driverCtx = dispCtx->driverCtx;
-        z_display_init(driverCtx->spiID, dispCtx->objID);
+        z_display_init(ctxList[idx]);
     }
 }

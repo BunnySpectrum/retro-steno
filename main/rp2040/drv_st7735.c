@@ -5,33 +5,42 @@
 
 static uint8_t SPI_ID_ST7735;
 static ST7735_Object_t driverObjects[MAX_NUM_DISPLAY_DRIVERS];
-static ST7735_IO_t driverIOs[MAX_NUM_DISPLAY_DRIVERS];
+// static ST7735_IO_t driverIOs[MAX_NUM_DISPLAY_DRIVERS];
 
-int32_t rs_st7735_writereg(uint8_t reg, uint8_t *data, uint32_t length){
+int32_t rs_st7735_write_reg(void *pCtx, uint8_t reg, uint8_t *pData, uint32_t length){
+    DISP_CTX_ST7735_s *pDriver = (DISP_CTX_ST7735_s*) pCtx;
     spiResponse_t resp1, resp2;
     uint8_t data1[1] = {reg};
     resp1.data = data1;
     resp1.length = 1;
 
-    rs_gpio_put(DISP0_DC_PIN, 0);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
-    rs_spi_send_data(&resp1, SPI_ID_DISPLAY);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
+
+    rs_gpio_put(pDriver->dispDCPin, 0);
+    rs_gpio_put(pDriver->dispCSPin, 0);
+    rs_spi_send_data(&resp1, pDriver->spiID);
+    rs_gpio_put(pDriver->dispCSPin, 1);
     
     if(length > 0){
-        resp2.data = data;
+        resp2.data = pData;
         resp2.length = length;
 
-        rs_gpio_put(DISP0_DC_PIN, 1);
-        rs_gpio_put(SPI_DISP0_CS_PIN, 0);
-        rs_spi_send_data(&resp2, SPI_ID_DISPLAY);
-        rs_gpio_put(SPI_DISP0_CS_PIN, 1);
+        rs_gpio_put(pDriver->dispDCPin, 1);
+        rs_gpio_put(pDriver->dispCSPin, 0);
+        rs_spi_send_data(&resp2, pDriver->spiID);
+        rs_gpio_put(pDriver->dispCSPin, 1);
     }
 
     return ST7735_OK;
 }
 
-int32_t rs_st7735_readreg(uint8_t reg, uint8_t *data){
+int32_t nop_rs_st7735_write_reg(uint8_t reg, uint8_t *pData, uint32_t length){
+    return ST7735_ERROR;
+}
+
+
+
+int32_t rs_st7735_read_reg(void *pCtx, uint8_t reg, uint8_t *pData){
+    DISP_CTX_ST7735_s *pDriver = (DISP_CTX_ST7735_s*) pCtx;
     spiResponse_t resp1, resp2;
     uint8_t data1[2] = {reg, 0x0};
     uint8_t data2[2] = {0x0, 0x0};
@@ -41,39 +50,52 @@ int32_t rs_st7735_readreg(uint8_t reg, uint8_t *data){
     resp2.data = data2;
     resp2.length = 1;
 
+    rs_gpio_put(pDriver->dispDCPin, 0);
+    rs_gpio_put(pDriver->dispCSPin, 0);
+    rs_spi_send_data(&resp1, pDriver->spiID);
+    // need to hi-z MOSI and bit bang input maybe?
+    rs_spi_recv_data(&resp2, pDriver->spiID, 0x0);
+    rs_gpio_put(pDriver->dispCSPin, 1);
 
 
-    rs_gpio_put(DISP0_DC_PIN, 0);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
-    rs_spi_send_data(&resp1, SPI_ID_DISPLAY);
-    rs_spi_recv_data(&resp2, SPI_ID_DISPLAY, 0x0);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
-
-    *data = resp2.data[0];
-
-    return ST7735_OK;
-}
-
-int32_t rs_st7735_senddata(uint8_t *data, uint32_t length){
-    spiResponse_t resp2;
-
-    resp2.data = data;
-    resp2.length = length;
-
-    rs_gpio_put(DISP0_DC_PIN, 1);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 0);
-    rs_spi_send_data(&resp2, SPI_ID_DISPLAY);
-    rs_gpio_put(SPI_DISP0_CS_PIN, 1);
-
+    *pData = resp2.data[0];
 
     return ST7735_OK;
 }
 
-int32_t rs_st7735_recvdata(uint8_t *data, uint32_t length){
+int32_t nop_rs_st7735_read_reg(uint8_t reg, uint8_t *pData){
     return ST7735_ERROR;
 }
 
-int32_t rs_st7735_gettick(){
+int32_t rs_st7735_send_data(void *pCtx, uint8_t *pData, uint32_t length){
+    DISP_CTX_ST7735_s *pDriver = (DISP_CTX_ST7735_s*) pCtx;
+    spiResponse_t resp2;
+
+    resp2.data = pData;
+    resp2.length = length;
+
+    rs_gpio_put(pDriver->dispDCPin, 1);
+    rs_gpio_put(pDriver->dispCSPin, 0);
+    rs_spi_send_data(&resp2, pDriver->spiID);
+    rs_gpio_put(pDriver->dispCSPin, 1);
+
+    return ST7735_OK;
+}
+
+int32_t nop_rs_st7735_send_data(uint8_t *pData, uint32_t length){
+    return ST7735_ERROR;
+}
+
+int32_t rs_st7735_recv_data(void *pCtx, uint8_t *pData, uint32_t length){
+    // If I can get read reg to work w/ this display (TBD if hardware limitation on display board), then I can implement this function
+    return ST7735_ERROR;
+}
+
+int32_t nop_rs_st7735_recv_data(uint8_t *pData, uint32_t length){
+    return ST7735_ERROR;
+}
+
+int32_t rs_st7735_get_tick(){
     return to_ms_since_boot(get_absolute_time());
 }
 
@@ -87,42 +109,38 @@ int32_t rs_st7735_io_deinit(){
     return ST7735_OK;
 }
 
-RS_CODE_e rs_st7735_init(uint8_t spiID, uint8_t driverID){
-    if (driverID >= MAX_NUM_DISPLAY_DRIVERS){
+RS_CODE_e rs_st7735_init(DISP_CTX_ST7735_s *pCtx){
+    if (pCtx->objID >= MAX_NUM_DISPLAY_DRIVERS){
         return RS_CODE_ERR;
     }
-    ST7735_Object_t *obj = &driverObjects[driverID];
-    ST7735_IO_t *io = &driverIOs[driverID];
+    ST7735_Object_t *pObj = &driverObjects[pCtx->objID];
+
+    pObj->IO.Init      = rs_st7735_io_init;
+    pObj->IO.DeInit    = rs_st7735_io_deinit;
+    pObj->IO.Address   = pCtx->objID;
+    pObj->IO.WriteReg  = nop_rs_st7735_write_reg;
+    pObj->IO.ReadReg   = nop_rs_st7735_read_reg;
+    pObj->IO.SendData  = nop_rs_st7735_send_data;
+    pObj->IO.RecvData  = nop_rs_st7735_recv_data;
+    pObj->IO.GetTick   = rs_st7735_get_tick;
+
+    pObj->Ctx.ReadReg   = rs_st7735_read_reg;
+    pObj->Ctx.WriteReg  = rs_st7735_write_reg;
+    pObj->Ctx.SendData  = rs_st7735_send_data;
+    pObj->Ctx.RecvData  = rs_st7735_recv_data;
+    pObj->Ctx.handle    = pCtx;
+
+    pObj->IO.Init();
+    pCtx->pDriver = pObj;
 
 
-    io->Init = rs_st7735_io_init; 
-    io->DeInit = rs_st7735_io_deinit;
-    io->Address = driverID;
-    io->WriteReg = rs_st7735_writereg;
-    io->ReadReg = rs_st7735_readreg;
-    io->SendData = rs_st7735_senddata;
-    io->RecvData = rs_st7735_recvdata;
-    io->GetTick = rs_st7735_gettick;
 
-
-
-    int32_t result;
-    /**
-     * N.B. This method doesn't allow for multiple drivers. Need to address that in a later change
-     * Need to make the ctx read/write methods point to something that uses handle -> Object -> IO -> address
-     * But then that would mean we couldn't use the IO.read/write methods since those signatures don't account for address
-     * Unless you make different wrapping methods for read/write per instance....but that doesn't feel right
-    */
-    result = ST7735_RegisterBusIO(obj, io);
-
-
-    ST7735_Init(obj, 0x5, 0);
-
+    ST7735_Init(pObj, pCtx->colorCoding, pCtx->orientation);
 
     uint32_t count;
 
     // fill full RAM with black
-    ST7735_FillRect(obj, 0, 0, ST7735_WIDTH, ST7735_HEIGHT, RS_RGB565_BLACK);
+    ST7735_FillRect(pObj, 0, 0, ST7735_WIDTH, ST7735_HEIGHT, RS_RGB565_BLACK);
 
     // sleep_ms(200);
     uint8_t pixel;
