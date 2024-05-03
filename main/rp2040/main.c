@@ -155,7 +155,8 @@ int main() {
 
     bsp_display_init();
 
-    display_init(displayList, 2);
+    display_init();
+    add_displays(displayList, 2);
     // display_reset();
 
     // Set up periodic tasks
@@ -172,6 +173,8 @@ int main() {
     add_repeating_timer_ms(1, &task_period_update_1ms, NULL, &timer);
 
 
+    display_draw_rect(0, 20, 20, 32, 32, RS_RGB565_MAGENTA);
+    display_draw_rect(1, 20, 20, 32, 32, RS_RGB565_CYAN);
 
     while (true) {
 
