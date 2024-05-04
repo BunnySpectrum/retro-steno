@@ -11,6 +11,7 @@
 #include "tests/test_mp_keyboard.h"
 #include "tests/test_keyboard.h"
 #include "tests/test_gpio.h"
+#include "tests/test_display.h"
 
 void setUp(void) {
     // set stuff up here
@@ -41,6 +42,8 @@ int main(void) {
     
     RUN_TEST(test_mp_keyboard_init);
     RUN_TEST(test_print_keyboard_state);
+
+    RUN_TEST(test_display_draw_pixel_invalid);
 
     return UNITY_END();
 }

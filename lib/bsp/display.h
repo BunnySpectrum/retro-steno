@@ -10,7 +10,7 @@
 #include "hw/drv_gpio.h"
 #include "bsp/pinmap.h"
 
-#include "pico/time.h"
+#include "utils/rs_time.h"
 
 #define DISP_ORIGIN_X 2
 #define DISP_ORIGIN_Y 3

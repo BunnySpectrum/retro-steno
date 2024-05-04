@@ -16,7 +16,7 @@ void display_init(){
 
 void display_reset(){
     rs_gpio_put(DISP0_RST_PIN, RS_FALSE);
-    sleep_ms(100);
+    rs_sleep_ms(100);
     rs_gpio_put(DISP0_RST_PIN, RS_TRUE);
 }
 
@@ -71,11 +71,19 @@ void add_displays(DISP_CTX_s *ctxList[], uint32_t length){
 
 
 RS_CODE_e display_draw_pixel(uint32_t displayID, uint32_t x, uint32_t y, RS_RGB565_e color){
+    if(displayID >= activeDisplays){
+        return RS_CODE_ERR;
+    }
+    
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
     return rs_st7735_draw_pixel(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, color);
 
 }
 RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e color){
+    if(displayID >= activeDisplays){
+        return RS_CODE_ERR;
+    }
+
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
     return rs_st7735_draw_rect(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + 1, width, height, color);
 

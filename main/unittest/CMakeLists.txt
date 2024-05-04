@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
 
 include_directories(../../external/Unity/src)
+include_directories(../../external/stm32-st7735)
 include_directories(../../lib)
 include_directories(tests)
 include_directories(utils)
@@ -15,8 +16,11 @@ add_executable(${PROJECT_NAME}
     ../../external/Unity/src/unity.c
     ../../lib/utils/rs_string.c
     ../../lib/utils/rs_stdio.c
+    ../../lib/utils/rs_time.c
     ../../lib/bsp/exp.c
     ../../lib/bsp/keyboard.c
+    ../../lib/bsp/display.c
+    ../../lib/app/model_point.c
     ../../lib/app/model_point.c
     utils/log_check.c
     drv_i2c_test.c
@@ -27,4 +31,6 @@ add_executable(${PROJECT_NAME}
     tests/test_mp_keyboard.c
     tests/test_keyboard.c
     tests/test_string.c
+    tests/test_display.c
+    drv_st7735_test.c
 )

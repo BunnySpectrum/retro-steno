@@ -10,3 +10,7 @@ void print_timestamp(uint64_t timestamp){
     printf("Time (s, ms, us): %lld, %lld, %lld\n", sec, msec, usec);
     return;
 }
+
+void rs_sleep_ms(uint32_t ms){
+    ;
+}

@@ -1,0 +1,7 @@
+#ifndef _TEST_DISPLAY_H_
+#define _TEST_DISPLAY_H_
+
+
+void test_display_draw_pixel_invalid(void);
+
+#endif
