@@ -2,7 +2,7 @@
 #define _LED_H_
 
 #include "utils/rs_stdint.h"
-#include "utils/rs_time.h"
+#include "utils/sys_time.h"
 #include "bsp/pinmap.h"
 #include "hw/drv_gpio.h"
 

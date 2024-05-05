@@ -13,7 +13,7 @@
 #include "hw/drv_i2c.h"
 #include "hw/drv_gpio.h"
 #include "bsp/keyboard.h"
-#include "utils/rs_time.h"
+#include "utils/sys_time.h"
 #include "utils/rs_colors.h"
 #include "app/hbt.h"
 #include "app/cli.h"

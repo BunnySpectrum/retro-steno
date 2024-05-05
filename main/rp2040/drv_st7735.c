@@ -96,7 +96,7 @@ int32_t nop_rs_st7735_recv_data(uint8_t *pData, uint32_t length){
 }
 
 int32_t rs_st7735_get_tick(){
-    return to_ms_since_boot(get_absolute_time());
+    return get_tick();
 }
 
 

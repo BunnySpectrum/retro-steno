@@ -16,7 +16,6 @@ add_executable(${PROJECT_NAME}
     ../../external/Unity/src/unity.c
     ../../lib/utils/rs_string.c
     ../../lib/utils/rs_stdio.c
-    ../../lib/utils/rs_time.c
     ../../lib/bsp/exp.c
     ../../lib/bsp/keyboard.c
     ../../lib/bsp/display.c
@@ -25,6 +24,7 @@ add_executable(${PROJECT_NAME}
     utils/log_check.c
     drv_i2c_test.c
     drv_gpio_test.c
+    sys_time_test.c
     tests/test_gpio.c
     tests/test_ioexp.c
     tests/test_modelpoint.c

@@ -10,7 +10,7 @@
 #include "bsp/pinmap.h"
 #include "hw/drv_spi.h"
 #include "hw/drv_gpio.h"
-#include "utils/rs_time.h"
+#include "utils/sys_time.h"
 
 #include "st7735.h"
 #include "st7735_reg.h"

@@ -7,6 +7,7 @@
 #include "bsp/pinmap.h"
 #include "app/alert.h"
 #include "utils/rs_codes.h"
+#include "utils/rs_stdio.h"
 
 RS_CODE_e bsp_gpio_init(void (*gpio_callback)(unsigned int, uint32_t));
 RS_CODE_e bsp_usb_init(void (*char_callback)(void* data), uint64_t *cbTime);

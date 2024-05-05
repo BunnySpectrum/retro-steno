@@ -1,4 +1,5 @@
-#include "rs_time.h"
+#include "utils/logging.h"
+
 
 void print_timestamp(uint64_t timestamp){
     uint64_t sec, msec, usec;
@@ -11,6 +12,3 @@ void print_timestamp(uint64_t timestamp){
     return;
 }
 
-void rs_sleep_ms(uint32_t ms){
-    ;
-}

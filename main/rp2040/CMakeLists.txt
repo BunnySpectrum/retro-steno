@@ -19,11 +19,11 @@ add_executable(${PROJECT_NAME}
     drv_i2c_rp2040.c
     drv_spi_rp2040.c
     drv_gpio_rp2040.c
-    drv_time_rp2040.c
     drv_stdio_rp2040.c
     drv_st7735.c
+    sys_time_rp2040.c
     ../../lib/utils/rs_stdio.c
-    ../../lib/utils/rs_time.c
+    ../../lib/utils/sys_time.c
     ../../lib/bsp/bsp.c
     ../../lib/bsp/scheduler.c
     ../../lib/bsp/led.c
