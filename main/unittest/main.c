@@ -3,6 +3,7 @@
 #include "unity.h"
 #include "hw/drv_i2c.h"
 #include "bsp/exp.h"
+#include "utils/sys_time.h"
 
 
 #include "tests/test_string.h"
@@ -44,6 +45,15 @@ int main(void) {
     RUN_TEST(test_print_keyboard_state);
 
     RUN_TEST(test_display_draw_pixel_invalid);
+
+    printf("Tick\n");
+    rs_sleep_ms(1000);
+    printf("Tock\n");
+    rs_sleep_ms(1000);
+    printf("Tick\n");
+    rs_sleep_ms(1000);
+    printf("Tock\n");
+    rs_sleep_ms(1000);
 
     return UNITY_END();
 }
