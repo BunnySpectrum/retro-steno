@@ -26,6 +26,7 @@ void tearDown(void) {
 // not needed when using generate_test_runner.rb
 int main(void) {
     printf("Built %s\n", __TIME__);
+    sys_time_init(0);
 
     UNITY_BEGIN();
     RUN_TEST(test_strcpy);
@@ -46,13 +47,13 @@ int main(void) {
 
     RUN_TEST(test_display_draw_pixel_invalid);
 
-    printf("Tick\n");
+    printf("Tick: %llu\n", get_tick()/1000);
     rs_sleep_ms(1000);
-    printf("Tock\n");
+    printf("Tock: %llu\n", get_tick()/1000);
     rs_sleep_ms(1000);
-    printf("Tick\n");
+    printf("Tick: %llu\n", get_tick()/1000);
     rs_sleep_ms(1000);
-    printf("Tock\n");
+    printf("Tock: %llu\n", get_tick()/1000);
     rs_sleep_ms(1000);
 
     return UNITY_END();
