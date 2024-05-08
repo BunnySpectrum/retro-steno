@@ -138,5 +138,9 @@ void test_modelpoint_set_invalid(void){
     TEST_ASSERT_EQUAL(MP_FALSE, mp_is_locked(mp));
 }
 
-
+void test_modelpoint(void){
+    RUN_TEST(test_modelpoint_init);
+    RUN_TEST(test_modelpoint_set_lock_state);
+    RUN_TEST(test_modelpoint_set_invalid);
+}
 

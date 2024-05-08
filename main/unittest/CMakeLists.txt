@@ -32,5 +32,6 @@ add_executable(${PROJECT_NAME}
     tests/test_keyboard.c
     tests/test_string.c
     tests/test_display.c
+    tests/test_sys_time.c
     drv_st7735_test.c
 )

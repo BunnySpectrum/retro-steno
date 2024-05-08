@@ -18,3 +18,8 @@ void test_gpio_init_cfg(void) {
 
     TEST_ASSERT_EQUAL(RS_CODE_OK, rs_gpio_init(2, &cfg));
 }
+
+void test_gpio(void){
+    RUN_TEST(test_gpio_init_null);
+    RUN_TEST(test_gpio_init_cfg);
+}

@@ -14,3 +14,7 @@ void test_display_draw_pixel_invalid(void) {
     TEST_ASSERT_EQUAL(RS_CODE_ERR, result);
     
 }
+
+void test_display(void){
+    RUN_TEST(test_display_draw_pixel_invalid);
+}

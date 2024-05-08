@@ -5,13 +5,6 @@
 #include "hw/drv_i2c.h"
 #include "bsp/exp.h"
 
-void setup_test_ioexp(void) {
-    // set stuff up here
-}
-
-void teardown_test_ioexp(void) {
-    // clean stuff up here
-}
 
 void test_ioexp_check(void) {
     uint8_t data;
@@ -39,4 +32,9 @@ void test_ioexp_read(void) {
     
     TEST_ASSERT_EQUAL(RS_CODE_OK, rs_i2c_read(0, EXP_3, &i2cResp, 0));
     TEST_ASSERT_EQUAL(0xFF, *i2cResp.data);
+}
+
+void test_ioexp(void){
+    RUN_TEST(test_ioexp_check);
+    RUN_TEST(test_ioexp_read);
 }

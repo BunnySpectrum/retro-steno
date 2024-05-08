@@ -14,13 +14,7 @@
     // mpBase_t mp;
     // mp.name = "test";
 
-void setup_test_mp_keyboard(void) {
-    // set stuff up here
-}
 
-void teardown_test_mp_keyboard(void) {
-    // clean stuff up here
-}
 
 
 void test_mp_keyboard_init(void) {
@@ -56,4 +50,8 @@ void test_mp_keyboard_init(void) {
 
     TEST_ASSERT_FALSE(mp_is_locked(kb.base));
     // mp_print(mp);
+}
+
+void test_mp_keyboard(){
+    RUN_TEST(test_mp_keyboard_init);
 }

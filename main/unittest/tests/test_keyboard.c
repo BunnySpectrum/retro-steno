@@ -95,3 +95,9 @@ void test_print_keyboard_state(void) {
         TEST_ASSERT_EQUAL(0, compare_buffer(checkBuffer, KEYBOARD_LINE_COUNT * KEYBOARD_LINE_LENGTH));
     }
 }
+
+
+
+void test_keyboard(void){
+    RUN_TEST(test_print_keyboard_state);
+}

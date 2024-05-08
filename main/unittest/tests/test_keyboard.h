@@ -9,6 +9,6 @@
 #define KEYBOARD_LINE_LENGTH 31
 #define KEYBOARD_CHAR_WIDTH 3
 
-void test_print_keyboard_state(void);
+void test_keyboard(void);
 
 #endif

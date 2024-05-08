@@ -7,14 +7,6 @@
 #include "test_string.h"
 
 
-void setup_test_string(void) {
-    // set stuff up here
-}
-
-void teardown_test_string(void) {
-    // clean stuff up here
-}
-
 
 void test_strcpy(void){
     char str1[] = "alpha";
@@ -37,4 +29,9 @@ void test_strlen(void){
     TEST_ASSERT_EQUAL(5, rs_strlen(str1));
     TEST_ASSERT_EQUAL(0, rs_strlen(str2));
     TEST_ASSERT_EQUAL(1, rs_strlen(str3));
+}
+
+void test_string(void){
+    RUN_TEST(test_strcpy);
+    RUN_TEST(test_strlen);
 }
