@@ -2,12 +2,28 @@
 
 #include <stdio.h>
 
+#define MAX_GPIO_NUMBER 30
+
+// extern TEST_GPIO_VALUE[];
+
+RS_BOOL_e TEST_GPIO_VALUE[MAX_GPIO_NUMBER] = {0};
+RS_GPIO_DIR_e TEST_GPIO_DIR[MAX_GPIO_NUMBER] = {0};
+RS_GPIO_FUNC_e TEST_GPIO_FUNC[MAX_GPIO_NUMBER] = {0};
+RS_GPIO_IRQ_e TEST_GPIO_IRQ[MAX_GPIO_NUMBER] = {0};
+
 RS_CODE_e rs_gpio_init(uint32_t id, const RS_GPIO_Config_s *cfg){
     if(cfg == NULL){
-        printf("Init gpio %d: default\n", id);
+        // printf("Init gpio %d: default\n", id);
+        TEST_GPIO_DIR[id] = RS_GPIO_INPUT;
+        TEST_GPIO_FUNC[id] = RS_GPIO_FUNC_SIO;
+        TEST_GPIO_VALUE[id] = 0;
     }else{
-        printf("Init gpio %d: dir %d, value %d, function %d\n", id, cfg->direction, cfg->value, cfg->value);
+        TEST_GPIO_DIR[id] = cfg->direction;
+        TEST_GPIO_FUNC[id] = cfg->function;
+        TEST_GPIO_VALUE[id] = cfg->value;
+        // printf("Init gpio %d: dir %d, value %d, function %d\n", id, cfg->direction, cfg->value, cfg->value);
     }
+
     return RS_CODE_OK;
 }
 
