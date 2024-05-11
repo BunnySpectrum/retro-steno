@@ -17,12 +17,14 @@
 #include "utils/rs_colors.h"
 #include "app/hbt.h"
 #include "app/cli.h"
+#include "app/screen.h"
 
 
 
 RS_TASK_INFO_s taskHeartbeat = {.task_func = hbt_toggle, .counter = -1, .period = HBT_TASK_PERIOD_MS, .repeat = RS_TRUE};
 RS_TASK_INFO_s taskCLI = {.task_func = cli_process, .counter = -1, .period = CLI_TASK_PERIOD_MS, .repeat = RS_FALSE};
 RS_TASK_INFO_s taskDebounce = {.task_func = handle_key_debounce, .counter = -1, .period = TASK_KEY_DEBOUNCE_PERIOD_MS, .repeat = RS_FALSE};
+RS_TASK_INFO_s taskScreen = {.task_func = screen_update, .counter = -1, .period = SCREEN_TASK_PERIOD_MS, .repeat = RS_TRUE};
 
 
 
@@ -32,6 +34,7 @@ bool task_period_update_1ms(struct repeating_timer *t){
     if(taskHeartbeat.counter > 0){taskHeartbeat.counter--;}
     if(taskCLI.counter > 0){taskCLI.counter--;}
     if(taskDebounce.counter > 0){taskDebounce.counter--;}
+    if(taskScreen.counter > 0){taskScreen.counter--;}
 
     return true;
 }
@@ -157,7 +160,9 @@ int main() {
 
     display_init();
     add_displays(displayList, 2);
-    // display_reset();
+
+    screen_init(2);
+    schedule_task(&taskScreen);
 
     // Set up periodic tasks
     hbt_init();
@@ -173,18 +178,19 @@ int main() {
     add_repeating_timer_ms(1, &task_period_update_1ms, NULL, &timer);
 
 
-    display_draw_rect(0, 20, 20, 32, 32, RS_RGB565_MAGENTA);
-    display_draw_rect(1, 20, 20, 32, 32, RS_RGB565_CYAN);
+    // display_draw_rect(0, 20, 20, 32, 32, RS_RGB565_MAGENTA);
+    // display_draw_rect(1, 20, 20, 32, 32, RS_RGB565_CYAN);
 
     while (true) {
 
         run_task_if_ready(&taskDebounce);
 
-        run_task_if_ready(&taskHeartbeat);
 
         run_task_if_ready(&taskCLI);
 
+        run_task_if_ready(&taskScreen);
 
+        run_task_if_ready(&taskHeartbeat);
         rs_sleep_ms(1);
 
 

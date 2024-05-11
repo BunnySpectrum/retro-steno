@@ -85,7 +85,7 @@ RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t
     }
 
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
-    return rs_st7735_draw_rect(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + 1, width, height, color);
+    return rs_st7735_draw_rect(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, width, height, color);
 
 }
 

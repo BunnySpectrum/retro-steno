@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     sys_time_rp2040.c
     ../../lib/utils/rs_stdio.c
     ../../lib/utils/sys_time.c
+    ../../lib/utils/rs_colors.c
     ../../lib/bsp/bsp.c
     ../../lib/bsp/scheduler.c
     ../../lib/bsp/led.c
@@ -34,6 +35,7 @@ add_executable(${PROJECT_NAME}
     ../../lib/app/hbt.c
     ../../lib/app/cli.c
     ../../lib/app/cmd.c
+    ../../lib/app/screen.c
     ../../external/stm32-st7735/st7735.c
     ../../external/stm32-st7735/st7735_reg.c
 )
