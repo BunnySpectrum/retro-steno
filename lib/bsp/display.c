@@ -89,5 +89,13 @@ RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t
 
 }
 
-// RS_CODE_e display_draw_rect_bit(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e* pColors);
+RS_CODE_e display_draw_rect_bit(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e* pColors){
+    if(displayID >= activeDisplays){
+        return RS_CODE_ERR;
+    }
+
+    DISP_CTX_s *dispCtx = displayContexts[displayID]; 
+    return rs_st7735_draw_rect_bit(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, width, height, pColors);
+
+}
 

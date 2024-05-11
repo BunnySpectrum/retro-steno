@@ -176,6 +176,6 @@ RS_CODE_e rs_st7735_draw_rect_bit(uint8_t driverID, uint32_t x, uint32_t y, uint
         return RS_CODE_ERR;
     }
 
-    // ST7735_FillRGBRect(&driverObjects[driverID], x, y, width, height, pColors);
+    ST7735_FillRGBRect(&driverObjects[driverID], x, y, (uint8_t*)pColors, width, height);
     return RS_CODE_OK;
 }

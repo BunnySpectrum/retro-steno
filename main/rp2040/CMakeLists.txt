@@ -36,6 +36,8 @@ add_executable(${PROJECT_NAME}
     ../../lib/app/cli.c
     ../../lib/app/cmd.c
     ../../lib/app/screen.c
+    ../../lib/app/gfx/gfx_core.c
+    ../../lib/app/gfx/gfx_font.c
     ../../external/stm32-st7735/st7735.c
     ../../external/stm32-st7735/st7735_reg.c
 )
