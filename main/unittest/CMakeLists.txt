@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
     drv_i2c_test.c
     drv_gpio_test.c
     sys_time_test.c
+    critical_test.c
     tests/test_gpio.c
     tests/test_ioexp.c
     tests/test_modelpoint.c

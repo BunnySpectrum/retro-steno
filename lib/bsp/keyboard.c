@@ -17,6 +17,10 @@ void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t 
 
 }
 
+RS_CODE_e mp_keyboard_get_data(MPKeyboard_t* mp, MPKeyboardData_t* pData){
+    mp_get_data((mpBase_t*)mp, pData, sizeof(MPKeyboardData_t), critical_section);
+}
+
 void keyboard_init(void (*callback)(unsigned int, uint32_t), Logger_s logger, MPKeyboard_t *mp, uint8_t i2cID){
     keyInputState = RS_PIN_STATE_HIGH; 
     pressCallback = callback;

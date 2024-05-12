@@ -7,8 +7,12 @@
 //  * have valid or invalid state independent of their value
 //  * have a subscription mechanism for clients to receive change notificvations when value or valid state changes
 
-#include <stdint.h>
-#include <stddef.h>
+#include "utils/rs_stdint.h"
+#include "utils/rs_stddef.h"
+#include "utils/rs_string.h"
+#include "utils/rs_stdio.h"
+
+#include "utils/rs_codes.h"
 
 // The following is derived from the ModelPoint design from the PIM book.
 // I've made some modifications below to avoid adding linked lists or dynamic allocation
@@ -57,6 +61,7 @@ typedef struct mp<some name>{
 } mp<some name>_t
 */
 typedef struct mpBase{
+    void* pData;
     mpSubscriber_t *subscribers; //for now, choosing to create all subscribers at compile time
     const char* name;   // assumed unique, but not enforced 
     size_t dataSize;
@@ -65,6 +70,7 @@ typedef struct mpBase{
     uint8_t locked;
     uint8_t subscriberCount;
 } mpBase_t;
+
 
 // Global list of model points
 //  Note that this alone won't work if derived model point structs are created
@@ -79,6 +85,7 @@ void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCou
 const char* mp_get_name(mpBase_t mp);
 //size_t get_size(mpBase_t); // not including since mpBase is always same size
 uint16_t mp_get_sequence(mpBase_t mp);
+RS_CODE_e mp_get_data(mpBase_t* mp, void* pResult, size_t length, RS_CODE_e (*crit)(RS_BOOL_e));
 uint8_t mp_is_valid(mpBase_t mp, uint16_t* seqNumPtr); // returns true if valid; also sets current sequence number
 uint8_t mp_is_locked(mpBase_t mp); //returns if locked or not
 

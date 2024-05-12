@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     drv_stdio_rp2040.c
     drv_st7735.c
     sys_time_rp2040.c
+    critical_rp2040.c
     ../../lib/utils/rs_stdio.c
     ../../lib/utils/sys_time.c
     ../../lib/utils/rs_colors.c
@@ -37,7 +38,7 @@ add_executable(${PROJECT_NAME}
     ../../lib/app/cmd.c
     ../../lib/app/screen.c
     ../../lib/app/gfx/gfx_core.c
-    ../../lib/app/gfx/gfx_font.c
+    ../../lib/app/gfx/fonts/win31_courier_e_10.c
     ../../external/stm32-st7735/st7735.c
     ../../external/stm32-st7735/st7735_reg.c
 )

@@ -4,9 +4,11 @@
 #include "utils/rs_stdint.h"
 #include "utils/rs_stdio.h"
 #include "utils/rs_codes.h"
+
 #include "app/model_point.h"
 #include "bsp/exp.h"
 #include "hw/drv_gpio.h"
+#include "hw/critical.h"
 #include "bsp/pinmap.h"
 
 typedef struct MPKeyboardData{
@@ -19,6 +21,7 @@ typedef struct MPKeyboard{
 } MPKeyboard_t;
 
 
+
 typedef enum PinInputFSM{
     RS_PIN_STATE_HIGH = 0,
     RS_PIN_STATE_FALL = 1,
@@ -29,6 +32,7 @@ typedef enum PinInputFSM{
 #define TASK_KEY_DEBOUNCE_PERIOD_MS 25
 
 void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t subscriberCount);
+RS_CODE_e mp_keyboard_get_data(MPKeyboard_t* mp, MPKeyboardData_t* pData);
 
 
 void cmd_get_pressed_keys();

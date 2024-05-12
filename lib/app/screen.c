@@ -67,7 +67,9 @@ void screen_update(){
 
     const char* pBitmap;
     uint8_t length, width, height, bitmapIndex, bitmapRow, bitmapCol, bitmapValue;
-    get_glyph_for_index(FONT_COURIER_10, 0x41 - 0x20 + textCounter, &pBitmap, &length, &width, &height);
+    RS_CODE_e result;
+    result = get_glyph_for_index(FONT_COURIER_10, ' ' + textCounter, &pBitmap, &length, &width, &height);
+    // printf("Get glyph: %d\n", result);
 
     // for(bitmapRow=0; bitmapRow < height; bitmapRow++){
     //     for(bitmapCol=0; bitmapCol < width; bitmapCol++){
@@ -85,7 +87,8 @@ void screen_update(){
 
     display_draw_rect_bit(0, 0, 32, 32, 32, imageBuffer);
 
-    textCounter = (textCounter + 1) % 26; 
+    //courier 10 is 2912 bytes, every 13 represents one glyph, so we have 2912/13 = 224 glyphs
+    textCounter = (textCounter + 1) % 224; 
 
 
 

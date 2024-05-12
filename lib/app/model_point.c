@@ -1,7 +1,5 @@
 #include "model_point.h"
 
-#include "utils/rs_string.h"
-#include "utils/rs_stdio.h"
 
 void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCount, size_t dataSize){
     mp->subscribers = subscriberList;
@@ -21,6 +19,19 @@ const char* mp_get_name(mpBase_t mp){
 uint16_t mp_get_sequence(mpBase_t mp){
     return mp.sequence;
 }
+
+
+RS_CODE_e mp_get_data(mpBase_t* mp, void* pResult, size_t length, RS_CODE_e (*crit)(RS_BOOL_e)){
+    crit(RS_TRUE);
+
+    //if invalid, blah, else:
+    memcpy(pResult, mp->pData, length);
+
+    crit(RS_FALSE);
+    return RS_CODE_OK;
+}
+
+
 
 
 uint8_t mp_is_valid(mpBase_t mp, uint16_t* seqNumPtr){

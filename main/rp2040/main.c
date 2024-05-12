@@ -93,6 +93,7 @@ void test_time_tick(){
     printf("Tick: %d.\n", tick);
 }
 
+
 DISP_CTX_s dispCtx0, dispCtx1;
 DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
 
@@ -191,9 +192,12 @@ int main() {
         run_task_if_ready(&taskScreen);
 
         run_task_if_ready(&taskHeartbeat);
+
+        
         rs_sleep_ms(1);
 
 
     } 
 }
+
 
