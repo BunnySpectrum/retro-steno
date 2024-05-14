@@ -8,7 +8,7 @@
 
 // simple periodic task to toggle LED
 
-#define SCREEN_TASK_PERIOD_MS 100
+#define SCREEN_TASK_PERIOD_MS 500
 
 static RS_RGB565_e imageBuffer[32*32];
 

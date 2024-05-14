@@ -26,6 +26,7 @@ add_executable(${PROJECT_NAME}
     ../../lib/utils/rs_stdio.c
     ../../lib/utils/sys_time.c
     ../../lib/utils/rs_colors.c
+    ../../lib/utils/rs_string.c
     ../../lib/bsp/bsp.c
     ../../lib/bsp/scheduler.c
     ../../lib/bsp/led.c

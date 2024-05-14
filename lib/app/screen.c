@@ -11,22 +11,23 @@ void screen_init(uint8_t count){
 }
 
 void screen_update(){
-    uint8_t display = 0;
+    uint32_t display = 0;
+    char hbtFlag[] = "X";
     RS_RGB565_e color;
 
-    for(display = 0; display < displayCount; display++){
+    for(display = 1; display < displayCount; display++){
         display_draw_rect(display, 0, 0, 32, 32, RS_RGB565_BLACK);
         display_draw_rect(display, 32, 32, 32, 32, RS_RGB565_BLACK);
     }
 
-    if(screenState == 0){
-        for(display = 0; display < displayCount; display++){
+    if( (screenState & 0x1 ) == 0){
+        for(display = 1; display < displayCount; display++){
             rgb565_for_index((display % (RGB565_COLOR_COUNT-1)) + 1, &color);
 
             display_draw_rect(display, 0, 0, 32, 32, color);
         }
     }else{
-        for(display = 0; display < displayCount; display++){
+        for(display = 1; display < displayCount; display++){
             rgb565_for_index(((display+2) % (RGB565_COLOR_COUNT-1)) + 1, &color);
             display_draw_rect(display, 32, 32, 32, 32, color);
         }
@@ -58,42 +59,41 @@ void screen_update(){
         }
     }
 
-    for(index = 0; index < 32*32; index++){
-        imageBuffer[index] = RS_RGB565_CYAN;
+    switch(screenState & 0x3){
+        case 0b00:
+            hbtFlag[0] = '|';
+            break;
+        case 0b01:
+            hbtFlag[0] = '/';
+            break;
+        case 0b10:
+            hbtFlag[0] = '-';
+            break;
+        case 0b11:
+            hbtFlag[0] = '\\';
+            break;
+        default:
+            hbtFlag[0] = 'X';
     }
 
-    row = 0;
-    col = 0;
 
-    const char* pBitmap;
-    uint8_t length, width, height, bitmapIndex, bitmapRow, bitmapCol, bitmapValue;
-    RS_CODE_e result;
-    result = get_glyph_for_index(FONT_COURIER_10, ' ' + textCounter, &pBitmap, &length, &width, &height);
-    // printf("Get glyph: %d\n", result);
+    GfxViewport_s viewport = {.displayID = 0, .originX = 0, .originY = 0, .pxWidth = 128, .pxHeight = 128};
+    
+    gfx_draw_text(&viewport, FONT_COURIER_10, hbtFlag);
+    viewport.originY += 30;
 
-    // for(bitmapRow=0; bitmapRow < height; bitmapRow++){
-    //     for(bitmapCol=0; bitmapCol < width; bitmapCol++){
-    //         bitmapValue = (pBitmap[bitmapRow] >> (7-bitmapCol)) & (0x01);
-    //         imageBuffer[(row + bitmapRow)*32 + (col + bitmapCol)] = bitmapValue == 1 ? RS_RGB565_BLACK : RS_RGB565_WHITE;
-    //     }
-    // }
+    // display_draw_rect(0, 0, 0, 1, 128, RS_RGB565_RED);
+    gfx_draw_text(&viewport, FONT_COURIER_10, "#");
+    viewport.originY += 15;
 
-    for(bitmapIndex=0; bitmapIndex < width*height; bitmapIndex++){
-        bitmapRow = bitmapIndex / 8;
-        bitmapCol = bitmapIndex % 8;
-        bitmapValue = (pBitmap[bitmapRow] >> ((width-1)-bitmapCol)) & (0x01);
-        imageBuffer[(row + bitmapRow)*32 + (col + bitmapCol)] = bitmapValue == 1 ? RS_RGB565_BLACK : RS_RGB565_WHITE;
-    }
+    gfx_draw_text(&viewport, FONT_COURIER_10, "STKPWHR");
+    viewport.originY += 15;
 
-    display_draw_rect_bit(0, 0, 32, 32, 32, imageBuffer);
+    gfx_draw_text(&viewport, FONT_COURIER_10, "AO*EU");
+    viewport.originY += 15;
 
-    //courier 10 is 2912 bytes, every 13 represents one glyph, so we have 2912/13 = 224 glyphs
-    textCounter = (textCounter + 1) % 224; 
+    gfx_draw_text(&viewport, FONT_COURIER_10, "FRPBLGTSDZ");
 
 
-
-
-
-
-    screenState ^= 0x1;
+    screenState++;
 }

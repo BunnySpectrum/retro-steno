@@ -99,3 +99,15 @@ RS_CODE_e display_draw_rect_bit(uint32_t displayID, uint32_t x, uint32_t y, uint
 
 }
 
+RS_CODE_e get_metrics_for_display(uint32_t displayID, DisplayMetrics_s *metrics){
+    if(displayID >= activeDisplays){
+        return RS_CODE_ERR;
+    }
+
+    //for now, only one type of display exists
+    metrics->pxHeight = 128;
+    metrics->pxWidth = 128;
+
+    return RS_CODE_OK;
+
+}
