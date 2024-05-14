@@ -241,7 +241,7 @@ void print_keyboard_state(Logger_s logger, MPKeyboardData_t *pData){
 RS_CODE_e keyboard_state_to_str(MPKeyboardData_t *pData, RS_BOOL_e *numBar, char *initial, char *vowel, char *final){
     uint8_t strIdx;
 
-    *numBar = RS_FALSE;
+    *numBar = (pData->keyMask & (1<<KEY_INDEX_NUM)) > 0 ? RS_TRUE : RS_FALSE;
 
     strIdx = 0;
     initial[strIdx++] = (pData->keyMask & (1<<KEY_INDEX_Si)) > 0 ? 'S' : ' ';

@@ -24,14 +24,14 @@ RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char
         // Check if glyph will fit on this line
         // X is 0-based index, width is a count of pixels
         // so a 8-wide glyph drawn at X is legal so long as X + width is <= maxWidth
-        if( ((drawX + width) > RS_MIN(viewport->pxWidth - viewport->originX, displayMetrics.pxWidth) )){
+        if( ((drawX + width) > RS_MIN(viewport->pxWidth + viewport->originX, displayMetrics.pxWidth) )){
             // need to wrap
             drawX = viewport->originX;
             drawY += height; 
         }
 
         // for now, if we exceed the viewport just bail with error
-        if((drawY + height - viewport->originY) > viewport->pxHeight){
+        if((drawY + height) > RS_MIN(viewport->pxHeight + viewport->originY, displayMetrics.pxHeight)){
             return RS_CODE_ERR;
         }
 
@@ -85,6 +85,27 @@ static RS_CODE_e get_font_objs_by_name(FontName_e name, const char** bitmap, con
             return RS_CODE_ERR;
 
     }
+    return RS_CODE_OK;
+}
+
+RS_CODE_e gfx_font_get_text_metrics(FontName_e name, const TextMetrics_s **tm){
+    switch(name){
+        case FONT_COURIER_10:
+            *tm = &tm_win31_courier_e_10;
+            return RS_CODE_OK;
+
+        case FONT_COURIER_12:
+            return RS_CODE_ERR;
+
+        case FONT_COURIER_15:
+            return RS_CODE_ERR;
+
+        default:
+            return RS_CODE_ERR;
+
+    }
+    return RS_CODE_OK;
+
 }
 
 RS_CODE_e get_glyph_for_index(FontName_e name, char code, const char** offset, uint8_t* length, uint8_t* width, uint8_t* height){

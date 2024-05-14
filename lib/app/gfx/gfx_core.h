@@ -25,6 +25,6 @@ RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char
 
 
 RS_CODE_e get_glyph_for_index(FontName_e name, char code, const char** pBitmap, uint8_t* length, uint8_t* width, uint8_t* height);
-RS_CODE_e gfx_font_get_text_metrics(FontName_e name);
+RS_CODE_e gfx_font_get_text_metrics(FontName_e name, const TextMetrics_s **tm);
 
 #endif

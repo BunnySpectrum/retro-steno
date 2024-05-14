@@ -2,6 +2,7 @@
 #define _SCREEN_H_
 
 #include "utils/rs_stdint.h"
+#include <stdlib.h>
 #include "utils/rs_colors.h"
 #include "bsp/display.h"
 #include "app/gfx/gfx_core.h"
