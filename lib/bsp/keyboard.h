@@ -21,7 +21,6 @@ typedef struct MPKeyboard{
 } MPKeyboard_t;
 
 
-
 typedef enum PinInputFSM{
     RS_PIN_STATE_HIGH = 0,
     RS_PIN_STATE_FALL = 1,
@@ -31,17 +30,20 @@ typedef enum PinInputFSM{
 
 #define TASK_KEY_DEBOUNCE_PERIOD_MS 25
 
+void keyboard_init(void (*callback)(unsigned int, uint32_t), Logger_s logger, MPKeyboard_t *mp, uint8_t i2cID);
+
 void keyboard_mp_init(MPKeyboard_t* kb, mpSubscriber_t* subscriberList, uint8_t subscriberCount);
 RS_CODE_e mp_keyboard_get_data(MPKeyboard_t* mp, MPKeyboardData_t* pData);
+RS_CODE_e mp_keyboard_set_data(MPKeyboard_t* mp, MPKeyboardData_t* pData);
 
 
 void cmd_get_pressed_keys();
-RS_CODE_e read_keys(uint8_t i2cID, uint8_t* keys, MPKeyboard_t* mp);
+RS_CODE_e read_keys(uint8_t i2cID, uint8_t* keys, MPKeyboardData_t *pData);
 
-void print_keyboard_state(Logger_s logger, MPKeyboard_t mp);
-void send_keyboard_state(MPKeyboard_t mp);
+void print_keyboard_state(Logger_s logger, MPKeyboardData_t *pData);
+RS_CODE_e keyboard_state_to_str(MPKeyboardData_t *pData, RS_BOOL_e *numBar, char *initial, char *vowel, char *final);
+void send_keyboard_state(MPKeyboardData_t *pData);
 
-void keyboard_init(void (*callback)(unsigned int, uint32_t), Logger_s logger, MPKeyboard_t *mp, uint8_t i2cID);
 void handle_key_debounce();
 void enable_stream_mode();
 void disable_stream_mode();

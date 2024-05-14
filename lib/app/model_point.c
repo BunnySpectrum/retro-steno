@@ -12,6 +12,10 @@ void mp_init(mpBase_t* mp, mpSubscriber_t* subscriberList, uint8_t subscriberCou
 
 }
 
+static void mp_increment_seq(mpBase_t *mp){
+    mp->sequence = RS_MAX(1, mp->sequence++);
+}
+
 const char* mp_get_name(mpBase_t mp){
     return mp.name;
 }
@@ -31,11 +35,26 @@ RS_CODE_e mp_get_data(mpBase_t* mp, void* pResult, size_t length, RS_CODE_e (*cr
     return RS_CODE_OK;
 }
 
+RS_CODE_e mp_set_data(mpBase_t* mp, void* pResult, size_t length, RS_CODE_e (*crit)(RS_BOOL_e)){
+    crit(RS_TRUE);
+
+    //if invalid, blah, else:
+    memcpy(mp->pData, pResult, length);
+
+    crit(RS_FALSE);
+
+    mp_increment_seq(mp);
+
+    return RS_CODE_OK;
+}
 
 
 
 uint8_t mp_is_valid(mpBase_t mp, uint16_t* seqNumPtr){
     *seqNumPtr = mp.sequence;
+
+    mp_increment_seq(&mp);
+
     return mp.valid == MP_VALID;
 }
 

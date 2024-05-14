@@ -1,12 +1,12 @@
 #include "screen.h"
 
-uint8_t screenState;
-uint8_t textCounter;
+static uint8_t screenState;
+static uint8_t keyState;
 uint8_t displayCount;
 
 void screen_init(uint8_t count){
     screenState = 0;
-    textCounter = 0;
+    keyState = 0;
     displayCount = count;
 }
 
@@ -14,50 +14,6 @@ void screen_update(){
     uint32_t display = 0;
     char hbtFlag[] = "X";
     RS_RGB565_e color;
-
-    for(display = 1; display < displayCount; display++){
-        display_draw_rect(display, 0, 0, 32, 32, RS_RGB565_BLACK);
-        display_draw_rect(display, 32, 32, 32, 32, RS_RGB565_BLACK);
-    }
-
-    if( (screenState & 0x1 ) == 0){
-        for(display = 1; display < displayCount; display++){
-            rgb565_for_index((display % (RGB565_COLOR_COUNT-1)) + 1, &color);
-
-            display_draw_rect(display, 0, 0, 32, 32, color);
-        }
-    }else{
-        for(display = 1; display < displayCount; display++){
-            rgb565_for_index(((display+2) % (RGB565_COLOR_COUNT-1)) + 1, &color);
-            display_draw_rect(display, 32, 32, 32, 32, color);
-        }
-    }
-
-    uint16_t index, row, col;
-
-    for(row=0; row < 32; row++){
-        for(col=0; col < 32; col++){
-            index = row*32 + col;
-            switch(row >> 3){
-                case 0:
-                    imageBuffer[index] = RS_RGB565_GREEN;
-                    break;
-                case 1:
-                    imageBuffer[index] = RS_RGB565_BLUE;
-                    break;
-                case 2:
-                    imageBuffer[index] = RS_RGB565_MAGENTA;
-                    break;
-                case 3:
-                    imageBuffer[index] = RS_RGB565_CYAN;
-                    break;
-                default:
-                    imageBuffer[index] = RS_RGB565_WHITE;
-                    break;
-
-            }
-        }
-    }
 
     switch(screenState & 0x3){
         case 0b00:
@@ -96,4 +52,69 @@ void screen_update(){
 
 
     screenState++;
+}
+
+
+void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
+    MPKeyboardData_t data;
+    GfxViewport_s viewport = {.displayID = 1, .originX = 0, .originY = 0, .pxWidth = 128, .pxHeight = 128};
+    char hbtFlag[] = "X";
+    switch(keyState & 0x3){
+        case 0b00:
+            hbtFlag[0] = '|';
+            break;
+        case 0b01:
+            hbtFlag[0] = '/';
+            break;
+        case 0b10:
+            hbtFlag[0] = '-';
+            break;
+        case 0b11:
+            hbtFlag[0] = '\\';
+            break;
+        default:
+            hbtFlag[0] = 'X';
+    }
+
+    display_draw_rect(1, 0, 0, 128, 128, RS_RGB565_BLACK);
+
+    gfx_draw_text(&viewport, FONT_COURIER_10, hbtFlag);
+    viewport.originY += 16;
+    keyState++;
+
+    RS_BOOL_e numBar;
+    char initial[7] = {0};
+    char vowel[7] = {5};
+    char final[10] = {0};
+
+    if(RS_CODE_OK != mp_get_data(mp, &data, sizeof(MPKeyboardData_t), critical_section)){
+        gfx_draw_text(&viewport, FONT_COURIER_10, "Error");
+        return;
+    }
+    
+
+
+    if(RS_CODE_OK != keyboard_state_to_str(&data, &numBar, initial, vowel, final)){
+        gfx_draw_text(&viewport, FONT_COURIER_10, "X");
+        return;
+    }
+
+    if(numBar == RS_TRUE){
+        gfx_draw_text(&viewport, FONT_COURIER_10, "#");
+        viewport.originY += 15;
+    }
+
+    gfx_draw_text(&viewport, FONT_COURIER_10, initial);
+    viewport.originY += 15;
+
+    gfx_draw_text(&viewport, FONT_COURIER_10, vowel);
+    viewport.originY += 15;
+
+    gfx_draw_text(&viewport, FONT_COURIER_10, final);
+
+
+
+
+
+
 }

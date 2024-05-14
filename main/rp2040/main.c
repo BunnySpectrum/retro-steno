@@ -99,6 +99,9 @@ DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
 
 DISP_CTX_s *displayList[2];
 
+uint16_t debugSeq = 1;
+uint16_t newSeq = 1;
+
 int main() {
 
     // Set up printer
@@ -170,6 +173,7 @@ int main() {
     schedule_task(&taskHeartbeat);
 
     MPKeyboard_t mpKeyboard;
+    keyboard_mp_init(&mpKeyboard, NULL, 0);
     keyboard_init(&gpio_callback, debugPrinter, &mpKeyboard, I2C_ID);
 
     cli_init();
@@ -192,6 +196,13 @@ int main() {
         run_task_if_ready(&taskScreen);
 
         run_task_if_ready(&taskHeartbeat);
+
+        newSeq = mp_get_sequence(mpKeyboard.base);
+        if(newSeq > debugSeq ){
+            debugSeq = newSeq;
+
+            display_keyboard_callback(&mpKeyboard.base, NULL);
+        }
 
         
         rs_sleep_ms(1);
