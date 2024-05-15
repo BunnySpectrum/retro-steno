@@ -22,6 +22,7 @@ typedef struct GfxViewport{
 static RS_RGB565_e gfxImageBuffer[MAX_VIEWPORT_WIDTH * MAX_VIEWPORT_HEIGHT];
 
 RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char *text);
+RS_CODE_e gfx_text_extents(const GfxViewport_s *vp, FontName_e fontName, char *text, uint16_t *width, uint16_t *height);
 
 
 RS_CODE_e get_glyph_for_index(FontName_e name, char code, const char** pBitmap, uint8_t* length, uint8_t* width, uint8_t* height);

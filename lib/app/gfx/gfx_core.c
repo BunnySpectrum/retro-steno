@@ -1,6 +1,33 @@
 #include "app/gfx/gfx_core.h"
 
 
+RS_CODE_e gfx_text_extents(const GfxViewport_s *vp, FontName_e fontName, char *text, uint16_t *width, uint16_t *height){
+    const TextMetrics_s *tm;
+    DisplayMetrics_s dm;
+    uint16_t numLines;
+    uint16_t rowWidth;
+    size_t singleLineLength;
+
+
+    if(RS_CODE_OK != gfx_font_get_text_metrics(fontName, &tm)){
+        return RS_CODE_ERR;
+    }
+    
+    if(RS_CODE_OK != get_metrics_for_display(vp->displayID, &dm)){
+        return RS_CODE_ERR;
+    }
+
+    rowWidth = RS_MIN(dm.pxWidth - vp->originX, vp->pxWidth);
+    singleLineLength = rs_strlen(text)*tm->maxCharWidth;
+    numLines = singleLineLength == rowWidth ? 1 : (singleLineLength / rowWidth) + 1;
+
+    *height = numLines * tm->height;
+    *width = numLines > 1 ? rowWidth : singleLineLength;
+
+    return RS_CODE_OK;
+
+}
+
 RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char *text){
     RS_CODE_e result;
     char glyph;

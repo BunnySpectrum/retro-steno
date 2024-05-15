@@ -86,7 +86,8 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
     const TextMetrics_s *tm;
     DisplayMetrics_s dm;
     uint32_t activeDisplay = 1;
-    static uint16_t line = 0;
+    uint16_t startingY = 4;
+    static uint16_t line = 4;
 
     if(RS_CODE_OK != gfx_font_get_text_metrics(FONT_COURIER_10, &tm)){
         return;
@@ -128,6 +129,7 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
     char final[10] = {0};
 
     uint8_t charRead, charWrite, chordIdx;
+    uint16_t textScreenWidth, textScreenHeight;
     char cVal;
     char initialShort[7] = {0};
     char vowelShort[5] = {0};
@@ -147,14 +149,6 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
         return;
     }
         
-    // Clear cursor
-    display_draw_rect(activeDisplay, 0, 0, tm->maxCharWidth, dm.pxHeight, RS_RGB565_WHITE);
-
-    // Clear section
-    display_draw_rect(activeDisplay, 0, viewport.originY, dm.pxWidth, 2*(tm->height), RS_RGB565_WHITE);
-
-    // Draw cursor
-    gfx_draw_text(&vpCursor, FONT_COURIER_10, ">");
 
     if(numBar == RS_TRUE){
         // gfx_draw_text(&viewport, FONT_COURIER_10, "#");
@@ -220,10 +214,29 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
 
 
     fullChord[chordIdx] = '\0';
-    gfx_draw_text(&viewport, FONT_COURIER_10, fullChord);
-    line = (line + tm->height*2);
-    if( (line + tm->height*2) > dm.pxHeight){
-        line = 0;
+
+    // Clear cursor
+    display_draw_rect(activeDisplay, 0, 0, tm->maxCharWidth, dm.pxHeight, RS_RGB565_WHITE);
+
+    // Calc how much space text will take
+    if(RS_CODE_OK != gfx_text_extents(&viewport, FONT_COURIER_10, fullChord, &textScreenWidth, &textScreenHeight)){
+        return;
     }
+
+    if( (line + textScreenHeight) > dm.pxHeight){
+        display_draw_rect(activeDisplay, 0, viewport.originY, dm.pxWidth, dm.pxHeight - viewport.originY, RS_RGB565_WHITE);
+        line = startingY;
+        viewport.originY = line;
+        vpCursor.originY = line;
+    }
+
+    // Clear section
+    display_draw_rect(activeDisplay, 0, viewport.originY, dm.pxWidth, textScreenHeight, RS_RGB565_WHITE);
+
+    // Draw cursor
+    printf("Cursor: Y %d, line %d\n", vpCursor.originY, line);
+    gfx_draw_text(&vpCursor, FONT_COURIER_10, ">");
+    gfx_draw_text(&viewport, FONT_COURIER_10, fullChord);
+    line = (line + textScreenHeight);
 
 }
