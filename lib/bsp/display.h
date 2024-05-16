@@ -1,6 +1,9 @@
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 
+#include "bsp/display_objs.h"
+#include "bsp/devices/displays/display_manifest.h"
+
 #include "st7735_reg.h"
 #include "st7735.h"
 
@@ -18,16 +21,13 @@
 #define MAX_NUM_DISPLAYS 2
 
 typedef struct DISP_CTX{
+    DisplayName_e name;
     uint32_t objID;
     void* driverCtx;
 }DISP_CTX_s;
 // Note, may change to have a driverCtx be fptrs, and change what is currently driverCtx to be hardwareCtx
 
 
-typedef struct DisplayMetrics{
-    uint16_t pxWidth;
-    uint16_t pxHeight;
-} DisplayMetrics_s;
 
 void display_init();
 void add_displays(DISP_CTX_s *ctxList[], uint32_t length);
@@ -38,6 +38,6 @@ RS_CODE_e display_draw_pixel(uint32_t displayID, uint32_t x, uint32_t y, RS_RGB5
 RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e color);
 RS_CODE_e display_draw_rect_bit(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e* pColors);
 
-RS_CODE_e get_metrics_for_display(uint32_t displayID, DisplayMetrics_s *metrics);
+RS_CODE_e get_metrics_for_display(uint32_t displayID, const DisplayMetrics_s **metrics);
 
 #endif

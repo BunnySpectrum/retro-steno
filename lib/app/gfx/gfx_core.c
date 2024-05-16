@@ -3,7 +3,7 @@
 
 RS_CODE_e gfx_text_extents(const GfxViewport_s *vp, FontName_e fontName, char *text, uint16_t *width, uint16_t *height){
     const TextMetrics_s *tm;
-    DisplayMetrics_s dm;
+    const DisplayMetrics_s *dm;
     uint16_t numLines;
     uint16_t rowWidth;
     size_t singleLineLength;
@@ -17,7 +17,7 @@ RS_CODE_e gfx_text_extents(const GfxViewport_s *vp, FontName_e fontName, char *t
         return RS_CODE_ERR;
     }
 
-    rowWidth = RS_MIN(dm.pxWidth - vp->originX, vp->pxWidth);
+    rowWidth = RS_MIN(dm->pxWidth - vp->originX, vp->pxWidth);
     singleLineLength = rs_strlen(text)*tm->maxCharWidth;
     numLines = singleLineLength == rowWidth ? 1 : (singleLineLength / rowWidth) + 1;
 
@@ -37,8 +37,8 @@ RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char
     uint8_t length, width, height, bitmapIndex, bitmapRow, bitmapCol, bitmapValue;
     uint16_t drawX, drawY;
 
-    DisplayMetrics_s displayMetrics;
-    if(RS_CODE_OK != get_metrics_for_display(viewport->displayID, &displayMetrics)){
+    const DisplayMetrics_s *dm;
+    if(RS_CODE_OK != get_metrics_for_display(viewport->displayID, &dm)){
         return RS_CODE_ERR;
     }
 
@@ -51,14 +51,14 @@ RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char
         // Check if glyph will fit on this line
         // X is 0-based index, width is a count of pixels
         // so a 8-wide glyph drawn at X is legal so long as X + width is <= maxWidth
-        if( ((drawX + width) > RS_MIN(viewport->pxWidth + viewport->originX, displayMetrics.pxWidth) )){
+        if( ((drawX + width) > RS_MIN(viewport->pxWidth + viewport->originX, dm->pxWidth) )){
             // need to wrap
             drawX = viewport->originX;
             drawY += height; 
         }
 
         // for now, if we exceed the viewport just bail with error
-        if((drawY + height) > RS_MIN(viewport->pxHeight + viewport->originY, displayMetrics.pxHeight)){
+        if((drawY + height) > RS_MIN(viewport->pxHeight + viewport->originY, dm->pxHeight)){
             return RS_CODE_ERR;
         }
 
@@ -68,7 +68,7 @@ RS_CODE_e gfx_draw_text(const GfxViewport_s *viewport, FontName_e fontName, char
             return RS_CODE_ERR;
         }
 
-        if(((drawX + width) > displayMetrics.pxWidth) || ((drawY + height) > displayMetrics.pxHeight)){
+        if(((drawX + width) > dm->pxWidth) || ((drawY + height) > dm->pxHeight)){
             return RS_CODE_ERR;
         }
 

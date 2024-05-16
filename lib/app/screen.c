@@ -10,7 +10,7 @@ void screen_init(uint8_t count){
     displayCount = count;
     
     const TextMetrics_s *tm;
-    DisplayMetrics_s dm;
+    const DisplayMetrics_s *dm;
     if(RS_CODE_OK != gfx_font_get_text_metrics(FONT_COURIER_10, &tm)){
         return;
     }
@@ -18,7 +18,7 @@ void screen_init(uint8_t count){
     if(RS_CODE_OK != get_metrics_for_display(1, &dm)){
         return;
     }
-    display_draw_rect(1, 0, 0, dm.pxWidth, dm.pxHeight, RS_RGB565_WHITE);
+    display_draw_rect(1, 0, 0, dm->pxWidth, dm->pxHeight, RS_RGB565_WHITE);
 }
 
 void screen_update(){
@@ -26,7 +26,7 @@ void screen_update(){
     char hbtFlag[] = "X";
     RS_RGB565_e color;
     const TextMetrics_s *tm;
-    DisplayMetrics_s dm;
+    const DisplayMetrics_s *dm;
     uint32_t activeDisplay = 0;
 
     if(RS_CODE_OK != gfx_font_get_text_metrics(FONT_COURIER_10, &tm)){
@@ -38,7 +38,7 @@ void screen_update(){
     }
 
     GfxViewport_s viewport = {.displayID = 0, .originX = 0, .originY = 0, .pxWidth = 128, .pxHeight = 128};
-    GfxViewport_s vpFlag = {.displayID = activeDisplay, .originX = dm.pxWidth - tm->maxCharWidth, .originY = dm.pxHeight - tm->height, .pxWidth = dm.pxWidth, .pxHeight = dm.pxHeight};
+    GfxViewport_s vpFlag = {.displayID = activeDisplay, .originX = dm->pxWidth - tm->maxCharWidth, .originY = dm->pxHeight - tm->height, .pxWidth = dm->pxWidth, .pxHeight = dm->pxHeight};
 
     switch(screenState & 0x3){
         case 0b00:
@@ -57,10 +57,10 @@ void screen_update(){
             hbtFlag[0] = 'X';
     }
 
-    vpFlag.originX = rand() % (dm.pxWidth - tm->maxCharWidth);
-    vpFlag.originY = rand() % (dm.pxHeight - tm->height);
+    vpFlag.originX = rand() % (dm->pxWidth - tm->maxCharWidth);
+    vpFlag.originY = rand() % (dm->pxHeight - tm->height);
 
-    display_draw_rect(activeDisplay, 0, 0, dm.pxWidth, dm.pxHeight, RS_RGB565_BLACK);
+    display_draw_rect(activeDisplay, 0, 0, dm->pxWidth, dm->pxHeight, RS_RGB565_BLACK);
     
     gfx_draw_text(&vpFlag, FONT_COURIER_10, hbtFlag);
 
@@ -84,7 +84,7 @@ void screen_update(){
 void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
     MPKeyboardData_t data;
     const TextMetrics_s *tm;
-    DisplayMetrics_s dm;
+    const DisplayMetrics_s *dm;
     uint32_t activeDisplay = 1;
     uint16_t startingY = 4;
     static uint16_t line = 4;
@@ -97,9 +97,9 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
         return;
     }
 
-    GfxViewport_s viewport = {.displayID = activeDisplay, .originX = tm->maxCharWidth, .originY = line, .pxWidth = dm.pxWidth, .pxHeight = dm.pxHeight};
-    GfxViewport_s vpFlag = {.displayID = activeDisplay, .originX = dm.pxWidth - tm->maxCharWidth, .originY = 0, .pxWidth = dm.pxWidth, .pxHeight = dm.pxHeight};
-    GfxViewport_s vpCursor = {.displayID = activeDisplay, .originX = 0, .originY = line, .pxWidth = dm.pxWidth, .pxHeight = dm.pxHeight};
+    GfxViewport_s viewport = {.displayID = activeDisplay, .originX = tm->maxCharWidth, .originY = line, .pxWidth = dm->pxWidth, .pxHeight = dm->pxHeight};
+    GfxViewport_s vpFlag = {.displayID = activeDisplay, .originX = dm->pxWidth - tm->maxCharWidth, .originY = 0, .pxWidth = dm->pxWidth, .pxHeight = dm->pxHeight};
+    GfxViewport_s vpCursor = {.displayID = activeDisplay, .originX = 0, .originY = line, .pxWidth = dm->pxWidth, .pxHeight = dm->pxHeight};
 
     char hbtFlag[] = "X";
     switch(keyState & 0x3){
@@ -216,22 +216,22 @@ void display_keyboard_callback(mpBase_t *mp, mpSubscriber_t *sub){
     fullChord[chordIdx] = '\0';
 
     // Clear cursor
-    display_draw_rect(activeDisplay, 0, 0, tm->maxCharWidth, dm.pxHeight, RS_RGB565_WHITE);
+    display_draw_rect(activeDisplay, 0, 0, tm->maxCharWidth, dm->pxHeight, RS_RGB565_WHITE);
 
     // Calc how much space text will take
     if(RS_CODE_OK != gfx_text_extents(&viewport, FONT_COURIER_10, fullChord, &textScreenWidth, &textScreenHeight)){
         return;
     }
 
-    if( (line + textScreenHeight) > dm.pxHeight){
-        display_draw_rect(activeDisplay, 0, viewport.originY, dm.pxWidth, dm.pxHeight - viewport.originY, RS_RGB565_WHITE);
+    if( (line + textScreenHeight) > dm->pxHeight){
+        display_draw_rect(activeDisplay, 0, viewport.originY, dm->pxWidth, dm->pxHeight - viewport.originY, RS_RGB565_WHITE);
         line = startingY;
         viewport.originY = line;
         vpCursor.originY = line;
     }
 
     // Clear section
-    display_draw_rect(activeDisplay, 0, viewport.originY, dm.pxWidth, textScreenHeight, RS_RGB565_WHITE);
+    display_draw_rect(activeDisplay, 0, viewport.originY, dm->pxWidth, textScreenHeight, RS_RGB565_WHITE);
 
     // Draw cursor
     printf("Cursor: Y %d, line %d\n", vpCursor.originY, line);
