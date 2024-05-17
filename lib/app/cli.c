@@ -5,6 +5,8 @@ extern void (*cmd_cb_stream)(void);
 extern void (*cmd_cb_read)(void);
 extern void (*cmd_a)(void);
 extern void (*cmd_b)(void);
+extern void (*cmd_c)(void);
+extern void (*cmd_s)(void);
 
 void cli_init(){
     ;
@@ -35,6 +37,14 @@ void cli_process(){
             
             case 'b':
                 cmd_b();
+                break;
+            
+            case 'c':
+                cmd_c();
+                break;
+            
+            case 'd':
+                cmd_s();
                 break;
 
         }

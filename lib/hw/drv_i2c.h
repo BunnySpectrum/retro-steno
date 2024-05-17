@@ -17,6 +17,7 @@ RS_CODE_e rs_i2c_init(uint8_t id, uint32_t speed);
 
 RS_CODE_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop);
 
+RS_CODE_e rs_i2c_write(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop);
 
 
 

@@ -55,6 +55,8 @@ extern void (*cmd_cb_stream)(void);
 extern void (*cmd_cb_read)(void);
 extern void (*cmd_a)(void);
 extern void (*cmd_b)(void);
+extern void (*cmd_c)(void);
+extern void (*cmd_s)(void);
 
 #include "hardware/spi.h"
 void test_disp_spi(){
@@ -93,6 +95,182 @@ void test_time_tick(){
     printf("Tick: %d.\n", tick);
 }
 
+void test_u8x8(){
+
+    uint8_t cmdDisplayOff[2] = {0x0, 0xAE};
+    uint8_t cmdSetDisplayClockDiv1[2] = {0x0, 0xD5};
+    uint8_t cmdSetDisplayClockDiv2[2] = {0x0, 0x80};
+    uint8_t cmdSetMultiplex[2] = {0x0, 0xA8};
+    uint8_t cmdHeight[2] = {0x0, 31};
+
+
+    uint8_t cmdDisplayOffset1[2] = {0x0, 0xD3};
+    uint8_t cmdDisplayOffset2[2] = {0x0, 0x0};
+    uint8_t cmdSetStartline[2] = {0x0, 0x40 | 0x0};
+    uint8_t cmdChargepump[2] = {0x0, 0x8D};
+    uint8_t cmdVCC1[2] = {0x0, 0x14};
+    
+
+
+    uint8_t cmdMemoryMode1[2] = {0x0, 0x20};
+    uint8_t cmdMemoryMode2[2] = {0x0, 0x00};
+    uint8_t cmdSegremap[2] = {0x0, 0xA0 | 0x1};
+    uint8_t cmdComscandev[2] = {0x0, 0xC8};
+
+
+    uint8_t comPins = 0x02;
+    uint8_t contrast = 0x8F;
+
+    uint8_t cmdSetcompins1[2] = {0x0, 0xDA};
+    uint8_t cmdSetcompins2[2] = {0x0, comPins};
+    uint8_t cmdSetcontrast1[2] = {0x0, 0x81};
+    uint8_t cmdSetcontrast2[2] = {0x0, contrast};
+    uint8_t cmdSetprecharge1[2] = {0x0, 0xD9};
+    uint8_t cmdSetprecharge2[2] = {0x0, 0xF1};
+
+
+    uint8_t cmdSetvcomdetect1[2] = {0x0, 0xD8};
+    uint8_t cmdSetvcomdetect2[2] = {0x0, 0x40};
+    uint8_t cmdDisplayAllOnResume[2] = {0x0, 0xA4};
+    uint8_t cmdNormalDisplay[2] = {0x0, 0xA6};
+    uint8_t cmdDeactivatescroll[2] = {0x0, 0x2E};
+    uint8_t cmdDisplayOn[2] = {0x0, 0xAF};
+
+    uint8_t i2cID = 0;
+    uint8_t i2cAddr = 0x3C;
+    i2cResponse_t scratch;
+    scratch.length = 2;
+
+    scratch.data = cmdDisplayOff;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetDisplayClockDiv1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetDisplayClockDiv2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetMultiplex;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdHeight;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+
+
+    // Init 2
+    scratch.data = cmdDisplayOffset1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdDisplayOffset2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetStartline;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdChargepump;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdVCC1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+
+    // Init 3
+    scratch.data = cmdMemoryMode1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdMemoryMode2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSegremap;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdComscandev;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+
+    // Init 4
+    scratch.data = cmdSetcompins1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetcompins2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetcontrast1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetcontrast2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetprecharge1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetprecharge2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+
+
+    // Init 5
+    scratch.data = cmdSetvcomdetect1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdSetvcomdetect2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdDisplayAllOnResume;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdNormalDisplay;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdDeactivatescroll;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdDisplayOn;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+
+    uint8_t cmdPageaddr1[2] = {0x00, 0x22};
+    uint8_t cmdPageaddr2[2] = {0x00, 0x0};
+    uint8_t cmdPageaddr3[2] = {0x00, 0xFF};
+    uint8_t cmdColumaddr1[2] = {0x00, 0x21};
+    uint8_t cmdColumaddr2[2] = {0x00, 0};
+    uint8_t cmdWidth[2] = {0x00, 127};
+
+    uint8_t dataPixel1[2] = {0x40, 0xFF};
+    uint8_t dataPixel2[2] = {0x40, 0x00};
+
+    scratch.data = cmdPageaddr1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdPageaddr2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdPageaddr3;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdColumaddr1;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = cmdColumaddr2;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+    
+    scratch.data = cmdWidth;
+    rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    scratch.data = dataPixel1;
+    uint8_t row;
+    for(int i = 0; i < 128 * ((32+7) / 8); i++){
+        row = i / 16;
+        if((row % 2) == 0){
+            dataPixel1[1] = (i % 2) == 0 ? 0b10101010 : 0b01010101;
+        }else{
+            dataPixel1[1] = (i % 2) == 0 ? 0b01010101 : 0b10101010;
+        }
+        rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
+
+    }
+}
 
 DISP_CTX_s dispCtx0, dispCtx1;
 DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
@@ -115,6 +293,8 @@ int main() {
     cmd_cb_read = cmd_get_pressed_keys;
     cmd_a = test_disp_spi;
     cmd_b = test_time_tick;
+    cmd_c = test_u8x8;
+    cmd_s = i2c_search;
 
     // Init systems
     bsp_gpio_init(gpio_callback);
@@ -185,6 +365,8 @@ int main() {
 
     // display_draw_rect(0, 20, 20, 32, 32, RS_RGB565_MAGENTA);
     // display_draw_rect(1, 20, 20, 32, 32, RS_RGB565_CYAN);
+
+    test_u8x8();
 
     while (true) {
 

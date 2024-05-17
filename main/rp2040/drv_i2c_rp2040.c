@@ -38,3 +38,18 @@ RS_CODE_e rs_i2c_read(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nos
     return resp->rc;
 
 }
+
+RS_CODE_e rs_i2c_write(uint8_t id, uint8_t addr, i2cResponse_t* resp, uint8_t nostop){
+    resp->rc = RS_CODE_ERR;
+
+    if (id > I2C_INSTANCE_COUNT-1){
+        return resp->rc;
+    }
+        
+    if(resp->length == i2c_write_blocking(i2c_instances[id], addr, resp->data, resp->length, nostop)){
+        resp->rc = RS_CODE_OK;
+    }
+
+    return resp->rc;
+
+}

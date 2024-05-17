@@ -4,7 +4,7 @@
 #include "hw/drv_i2c.h"
 
 
-// void exp_search(uint8_t id);
+void i2c_search(void);
 uint8_t exp_check(uint8_t id, uint8_t addr);
 
 #define EXP_0 0x38
