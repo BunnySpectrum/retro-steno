@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
     drv_gpio_rp2040.c
     drv_stdio_rp2040.c
     drv_st7735.c
+    drv_ssd1306_rp2040.c
     sys_time_rp2040.c
     critical_rp2040.c
     ../../lib/utils/rs_stdio.c
