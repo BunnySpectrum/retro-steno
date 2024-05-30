@@ -2,9 +2,6 @@
 #ifndef _DRV_SSD1306_REG_H_
 #define _DRV_SSD1306_REG_H_
 
-#include "utils/rs_codes.h"
-#include "utils/rs_stdint.h"
-
 typedef enum CMD_SSD1306{
     // Command table 9-1
     CMD_SSD1306_SET_CONTRAST_CONTROL = 0x81,
@@ -51,21 +48,13 @@ typedef enum CMD_SSD1306{
     CMD_SSD1306_NOP = 0xE3,
 
 
+}CMD_SSD1306_e;
+
+typedef enum RC_SSD1306{
+  RC_SSD1306_OK = 0,
+  RC_SSD1306_ERR = 1,
+}RC_SSD1306_e;
 
 
-
-
-
-}CMD_SSD1306_e;[]
-
-
-
-typedef RS_CODE_e (*SSD1306_WriteReg_Func)(void *, uint8_t, uint8_t*, uint32_t);
-
-typedef struct
-{
-  SSD1306_WriteReg_Func   WriteReg;
-  void                *handle;
-} SSD1306_ctx_s;
 
 #endif

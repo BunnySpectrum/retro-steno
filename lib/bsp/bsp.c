@@ -48,10 +48,18 @@ RS_CODE_e bsp_i2c_init(uint32_t i2cID){
         alert_error();
     };
 
-    rs_gpio_set_function(SDA_PIN, RS_GPIO_FUNC_I2C);
-    rs_gpio_set_function(SCL_PIN, RS_GPIO_FUNC_I2C);
-    rs_gpio_pull_up(SDA_PIN);
-    rs_gpio_pull_up(SCL_PIN);
+    if(i2cID == 0){
+        rs_gpio_set_function(SDA_PIN, RS_GPIO_FUNC_I2C);
+        rs_gpio_set_function(SCL_PIN, RS_GPIO_FUNC_I2C);
+        rs_gpio_pull_up(SDA_PIN);
+        rs_gpio_pull_up(SCL_PIN);
+    }else{
+        rs_gpio_set_function(10, RS_GPIO_FUNC_I2C);
+        rs_gpio_set_function(11, RS_GPIO_FUNC_I2C);
+        rs_gpio_pull_up(10);
+        rs_gpio_pull_up(11);
+
+    }
 
     return RS_CODE_OK;
 }

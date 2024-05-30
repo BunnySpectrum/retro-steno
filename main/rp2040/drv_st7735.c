@@ -3,7 +3,7 @@
 #include "st7735.h"
 #include "st7735_reg.h"
 
-static uint8_t SPI_ID_ST7735;
+// static uint8_t SPI_ID_ST7735;
 static ST7735_Object_t driverObjects[MAX_NUM_DISPLAY_DRIVERS];
 // static ST7735_IO_t driverIOs[MAX_NUM_DISPLAY_DRIVERS];
 

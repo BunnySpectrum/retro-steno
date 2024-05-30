@@ -10,6 +10,7 @@
 #include "utils/rs_stdio.h"
 #include "hw/drv_spi.h"
 #include "hw/drv_st7735.h"
+#include "hw/drv_ssd1306.h"
 #include "hw/drv_gpio.h"
 #include "bsp/pinmap.h"
 

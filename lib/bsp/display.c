@@ -25,38 +25,15 @@ void display_reset(){
 
 
 void add_display(DISP_CTX_s *pCtx){
-    rs_st7735_init((DISP_CTX_ST7735_s*)pCtx->driverCtx);
+    // temp hack until common generic driver struct is made
+    if(pCtx->objID < 2){
+        rs_st7735_init((DISP_CTX_ST7735_s*)pCtx->driverCtx);
+    }else{
+        rs_ssd1306_init((DISP_CTX_SSD1306_s*)pCtx->driverCtx);
+    }
+
     displayContexts[activeDisplays] = pCtx;
     activeDisplays++;
-    
-    // FIXME: origin changes based on orientation 
-    uint8_t originX, originY;
-    originX = DISP_ORIGIN_X;
-    originY = DISP_ORIGIN_Y;
-
-    uint32_t driverID = pCtx->objID;
-
-    // Top left
-    // rs_st7735_draw_pixel(driverID, originX, originY, RS_RGB565_WHITE);
-    
-    // Top right
-    // rs_st7735_draw_pixel(driverID, originX+127, originY, RS_RGB565_WHITE);
-
-    // bottom right
-    // rs_st7735_draw_pixel(driverID, originX+127, originY+127, RS_RGB565_WHITE);
-
-    // bottom left
-    // rs_st7735_draw_pixel(driverID, originX, originY+127, RS_RGB565_WHITE);
-
-    // if(driverID == 0){
-    //     rs_st7735_draw_rect(driverID, 10+originX + 48, 10+originY + 48, 32, 32, RS_RGB565_RED);
-    //     rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_BLUE);
-
-    // }else{
-    //     rs_st7735_draw_rect(driverID, originX + 48, originY + 48, 32, 32, RS_RGB565_BLUE);
-    //     rs_st7735_draw_rect(driverID, 10+originX + 48, 10+originY + 48, 32, 32, RS_RGB565_RED);
-
-    // }
 
 }
 

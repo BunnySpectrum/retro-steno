@@ -18,6 +18,7 @@
 #include "app/hbt.h"
 #include "app/cli.h"
 #include "app/screen.h"
+#include "hw/drv_ssd1306.h"
 
 
 
@@ -95,7 +96,7 @@ void test_time_tick(){
     printf("Tick: %d.\n", tick);
 }
 
-void test_u8x8(){
+void test_u8x8(uint8_t id, uint8_t addr){
 
     uint8_t cmdDisplayOff[2] = {0x0, 0xAE};
     uint8_t cmdSetDisplayClockDiv1[2] = {0x0, 0xD5};
@@ -136,8 +137,8 @@ void test_u8x8(){
     uint8_t cmdDeactivatescroll[2] = {0x0, 0x2E};
     uint8_t cmdDisplayOn[2] = {0x0, 0xAF};
 
-    uint8_t i2cID = 0;
-    uint8_t i2cAddr = 0x3C;
+    uint8_t i2cID = id;
+    uint8_t i2cAddr = addr; //0x3C only for now;
     i2cResponse_t scratch;
     scratch.length = 2;
 
@@ -261,21 +262,27 @@ void test_u8x8(){
     scratch.data = dataPixel1;
     uint8_t row;
     for(int i = 0; i < 128 * ((32+7) / 8); i++){
-        row = i / 16;
-        if((row % 2) == 0){
-            dataPixel1[1] = (i % 2) == 0 ? 0b10101010 : 0b01010101;
-        }else{
-            dataPixel1[1] = (i % 2) == 0 ? 0b01010101 : 0b10101010;
+        switch(i2cID){
+            case 0:
+                dataPixel1[1] = i2cAddr;
+                break;
+            case 1:
+                dataPixel1[1] = i2cAddr ^ 0xFF;
+                break;
+            default:
+                dataPixel1[1] = 0x00;
+
         }
         rs_i2c_write(i2cID, i2cAddr, &scratch, 0);
 
     }
 }
 
-DISP_CTX_s dispCtx0, dispCtx1;
-DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
+DISP_CTX_s dispCtx0, dispCtx1, dispCtx2, dispCtx3, dispCtx4;
+DISP_CTX_s *displayList[5];
 
-DISP_CTX_s *displayList[2];
+DISP_CTX_ST7735_s st7735Ctx0, st7735Ctx1;
+DISP_CTX_SSD1306_s ssd1306Ctx0, ssd1306Ctx1, ssd1306Ctx2;
 
 uint16_t debugSeq = 1;
 uint16_t newSeq = 1;
@@ -293,13 +300,14 @@ int main() {
     cmd_cb_read = cmd_get_pressed_keys;
     cmd_a = test_disp_spi;
     cmd_b = test_time_tick;
-    cmd_c = test_u8x8;
+    // cmd_c = test_u8x8;
     cmd_s = i2c_search;
 
     // Init systems
     bsp_gpio_init(gpio_callback);
     bsp_usb_init(&char_callback, NULL);
     bsp_i2c_init(I2C_ID);
+    bsp_i2c_init(1);
     bsp_spi_init(SPI_ID_DISPLAY);
 
     // Make the pins available to picotool
@@ -319,6 +327,23 @@ int main() {
     displayList[1] = &dispCtx1;
     dispCtx1.objID = 1;
     dispCtx1.driverCtx = &st7735Ctx1;
+
+
+    displayList[2] = &dispCtx2;
+    dispCtx2.objID = 0;
+    dispCtx2.driverCtx = &ssd1306Ctx0;
+
+    displayList[3] = &dispCtx3;
+    dispCtx3.objID = 1;
+    dispCtx3.driverCtx = &ssd1306Ctx1;
+
+    displayList[4] = &dispCtx4;
+    dispCtx4.objID = 2;
+    dispCtx4.driverCtx = &ssd1306Ctx2;
+
+
+
+
 
     st7735Ctx0.cardCSPin = SPI_DISP0_CARD_CS_PIN;
     st7735Ctx0.dispDCPin = DISP0_DC_PIN;
@@ -340,10 +365,29 @@ int main() {
     st7735Ctx1.colorCoding = 0x5;
     st7735Ctx1.orientation = 0;
 
+    ssd1306Ctx0.objID = dispCtx2.objID;
+    ssd1306Ctx0.orientation = 0;
+    ssd1306Ctx0.i2cID = 1;
+    ssd1306Ctx0.i2cAddr = 0x3C;
+
+    ssd1306Ctx1.objID = dispCtx3.objID;
+    ssd1306Ctx1.orientation = 0;
+    ssd1306Ctx1.i2cID = 1;
+    ssd1306Ctx1.i2cAddr = 0x3D;
+
+    ssd1306Ctx2.objID = dispCtx4.objID;
+    ssd1306Ctx2.orientation = 0;
+    ssd1306Ctx2.i2cID = 0;
+    ssd1306Ctx2.i2cAddr = 0x3C;
+
+
     bsp_display_init();
 
     display_init();
     add_displays(displayList, 2);
+    rs_ssd1306_init(&ssd1306Ctx0);
+    rs_ssd1306_init(&ssd1306Ctx1);
+    rs_ssd1306_init(&ssd1306Ctx2);
 
     screen_init(2);
     schedule_task(&taskScreen);
@@ -366,7 +410,18 @@ int main() {
     // display_draw_rect(0, 20, 20, 32, 32, RS_RGB565_MAGENTA);
     // display_draw_rect(1, 20, 20, 32, 32, RS_RGB565_CYAN);
 
-    test_u8x8();
+    rs_ssd1306_reset(&ssd1306Ctx0);
+    rs_ssd1306_reset(&ssd1306Ctx1);
+    rs_ssd1306_reset(&ssd1306Ctx2);
+
+    ssd1306_init(ssd1306Ctx0.pDriver, 0, 63);
+    ssd1306_init(ssd1306Ctx1.pDriver, 0, 63);
+    ssd1306_init(ssd1306Ctx2.pDriver, 0, 31);
+
+
+    // test_u8x8(1, 0x3C);
+    // test_u8x8(I2C_ID, 0x3C);
+    // test_u8x8(1, 0x3D);
 
     while (true) {
 
