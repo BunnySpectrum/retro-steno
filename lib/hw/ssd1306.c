@@ -19,7 +19,8 @@ RC_SSD1306_e ssd1306_init(SSD1306_Object_s *pObj, uint32_t orientation, uint32_t
     uint8_t cmdSegremap[2] = {0x0, 0xA0 | 0x1};
     uint8_t cmdComscandev[2] = {0x0, 0xC8};
 
-    uint8_t comPins = 0x02;
+    // More hacking until I have a notion of panel config
+    uint8_t comPins = height == 63 ? 0x12 : 0x02;
     uint8_t contrast = 0x8F;
 
     uint8_t cmdSetcompins1[2] = {0x0, 0xDA};
@@ -91,8 +92,7 @@ RC_SSD1306_e ssd1306_init(SSD1306_Object_s *pObj, uint32_t orientation, uint32_t
 
     uint8_t dataPixel[2] = {0x40, 0xFF};
 
-    // for(int i = 0; i < 128 * ((64+7) / 8); i++){
-    for(int i = 0; i < 128; i++){
+    for(int i = 0; i < 128 * ((height+7) / 8); i++){
         dataPixel[1] = 0xff;
         pObj->ctx.WriteCmd(pObj->ctx.handle, dataPixel, sizeof(dataPixel));
     }
@@ -101,4 +101,37 @@ RC_SSD1306_e ssd1306_init(SSD1306_Object_s *pObj, uint32_t orientation, uint32_t
     return RC_SSD1306_OK;
 
 
+}
+
+RC_SSD1306_e ssd1306_set_pixel(SSD1306_Object_s *pObj, uint32_t x, uint32_t y, uint32_t color){
+    uint8_t page = y/8;
+    // uint8_t page = (y % 2) == 0 ? y/8 : y/8 + 4;
+    uint8_t rowWithinPage = y % 8;
+
+    uint8_t cmdPageaddr1[2] = {0x00, 0x22};
+    uint8_t cmdPageaddr2[2] = {0x00, page+color};
+    uint8_t cmdPageaddr3[2] = {0x00, page+color};
+    uint8_t cmdColumnaddr1[2] = {0x00, 0x21};
+    uint8_t cmdColumnaddr2[2] = {0x00, x};
+    uint8_t cmdWidth[2] = {0x00, x};
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdPageaddr1, sizeof(cmdPageaddr1));
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdPageaddr2, sizeof(cmdPageaddr2));
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdPageaddr3, sizeof(cmdPageaddr3));
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdColumnaddr1, sizeof(cmdColumnaddr1));
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdColumnaddr2, sizeof(cmdColumnaddr2));
+    pObj->ctx.WriteCmd(pObj->ctx.handle, cmdWidth, sizeof(cmdWidth));
+    
+    uint8_t dataPixel[2] = {0x40, 0xFF};
+    dataPixel[1] = (1<<rowWithinPage)^0xFF;
+    pObj->ctx.WriteCmd(pObj->ctx.handle, dataPixel, sizeof(dataPixel));
+
+    return RC_SSD1306_OK;
+}
+
+RC_SSD1306_e ssd1306_fill_rect(SSD1306_Object_s *pObj, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color){
+    return RC_SSD1306_ERR;
+}
+
+RC_SSD1306_e ssd1306_bitmap_rect(SSD1306_Object_s *pObj, uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t* pColors){
+    return RC_SSD1306_ERR;
 }

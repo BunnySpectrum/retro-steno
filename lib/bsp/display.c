@@ -25,12 +25,6 @@ void display_reset(){
 
 
 void add_display(DISP_CTX_s *pCtx){
-    // temp hack until common generic driver struct is made
-    if(pCtx->objID < 2){
-        rs_st7735_init((DISP_CTX_ST7735_s*)pCtx->driverCtx);
-    }else{
-        rs_ssd1306_init((DISP_CTX_SSD1306_s*)pCtx->driverCtx);
-    }
 
     displayContexts[activeDisplays] = pCtx;
     activeDisplays++;
@@ -53,7 +47,7 @@ RS_CODE_e display_draw_pixel(uint32_t displayID, uint32_t x, uint32_t y, RS_RGB5
     }
     
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
-    return rs_st7735_draw_pixel(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, color);
+    return dispCtx->draw_pixel(dispCtx->objID, dispCtx->panelOffsetX + x, dispCtx->panelOffsetY + y, color);
 
 }
 RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t width, uint32_t height, RS_RGB565_e color){
@@ -62,7 +56,7 @@ RS_CODE_e display_draw_rect(uint32_t displayID, uint32_t x, uint32_t y, uint32_t
     }
 
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
-    return rs_st7735_draw_rect(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, width, height, color);
+    return dispCtx->draw_rect(dispCtx->objID, dispCtx->panelOffsetX + x, dispCtx->panelOffsetY + y, width, height, color);
 
 }
 
@@ -72,7 +66,7 @@ RS_CODE_e display_draw_rect_bit(uint32_t displayID, uint32_t x, uint32_t y, uint
     }
 
     DISP_CTX_s *dispCtx = displayContexts[displayID]; 
-    return rs_st7735_draw_rect_bit(dispCtx->objID, DISP_ORIGIN_X + x, DISP_ORIGIN_Y + y, width, height, pColors);
+    return dispCtx->draw_rect_bit(dispCtx->objID, dispCtx->panelOffsetX + x, dispCtx->panelOffsetY + y, width, height, pColors);
 
 }
 

@@ -323,23 +323,39 @@ int main() {
     displayList[0] = &dispCtx0;
     dispCtx0.objID = 0;
     dispCtx0.driverCtx = &st7735Ctx0;
+    dispCtx0.draw_pixel = rs_st7735_draw_pixel;
+    dispCtx0.draw_rect = rs_st7735_draw_rect;
+    dispCtx0.draw_rect_bit = rs_st7735_draw_rect_bit;
+    dispCtx0.panelOffsetX = 2;
+    dispCtx0.panelOffsetY = 3;
     
     displayList[1] = &dispCtx1;
     dispCtx1.objID = 1;
     dispCtx1.driverCtx = &st7735Ctx1;
+    dispCtx1.draw_pixel = rs_st7735_draw_pixel;
+    dispCtx1.draw_rect = rs_st7735_draw_rect;
+    dispCtx1.draw_rect_bit = rs_st7735_draw_rect_bit;
+    dispCtx1.panelOffsetX = 2;
+    dispCtx1.panelOffsetY = 3;
 
 
     displayList[2] = &dispCtx2;
     dispCtx2.objID = 0;
     dispCtx2.driverCtx = &ssd1306Ctx0;
+    dispCtx2.panelOffsetX = 0;
+    dispCtx2.panelOffsetY = 0;
 
     displayList[3] = &dispCtx3;
     dispCtx3.objID = 1;
     dispCtx3.driverCtx = &ssd1306Ctx1;
+    dispCtx3.panelOffsetX = 0;
+    dispCtx3.panelOffsetY = 0;
 
     displayList[4] = &dispCtx4;
     dispCtx4.objID = 2;
     dispCtx4.driverCtx = &ssd1306Ctx2;
+    dispCtx4.panelOffsetX = 0;
+    dispCtx4.panelOffsetY = 0;
 
 
 
@@ -367,16 +383,19 @@ int main() {
 
     ssd1306Ctx0.objID = dispCtx2.objID;
     ssd1306Ctx0.orientation = 0;
+    ssd1306Ctx0.height = 63;
     ssd1306Ctx0.i2cID = 1;
     ssd1306Ctx0.i2cAddr = 0x3C;
 
     ssd1306Ctx1.objID = dispCtx3.objID;
     ssd1306Ctx1.orientation = 0;
+    ssd1306Ctx1.height = 63;
     ssd1306Ctx1.i2cID = 1;
     ssd1306Ctx1.i2cAddr = 0x3D;
 
     ssd1306Ctx2.objID = dispCtx4.objID;
     ssd1306Ctx2.orientation = 0;
+    ssd1306Ctx2.height = 31;
     ssd1306Ctx2.i2cID = 0;
     ssd1306Ctx2.i2cAddr = 0x3C;
 
@@ -384,10 +403,12 @@ int main() {
     bsp_display_init();
 
     display_init();
-    add_displays(displayList, 2);
+    rs_st7735_init(&st7735Ctx0);
+    rs_st7735_init(&st7735Ctx1);
     rs_ssd1306_init(&ssd1306Ctx0);
     rs_ssd1306_init(&ssd1306Ctx1);
     rs_ssd1306_init(&ssd1306Ctx2);
+    add_displays(displayList, 2);
 
     screen_init(2);
     schedule_task(&taskScreen);
@@ -414,11 +435,23 @@ int main() {
     rs_ssd1306_reset(&ssd1306Ctx1);
     rs_ssd1306_reset(&ssd1306Ctx2);
 
-    ssd1306_init(ssd1306Ctx0.pDriver, 0, 63);
-    ssd1306_init(ssd1306Ctx1.pDriver, 0, 63);
-    ssd1306_init(ssd1306Ctx2.pDriver, 0, 31);
+    ssd1306_init(ssd1306Ctx0.pDriver, 0, ssd1306Ctx0.height);
+    ssd1306_init(ssd1306Ctx1.pDriver, 0, ssd1306Ctx1.height);
+    ssd1306_init(ssd1306Ctx2.pDriver, 0, ssd1306Ctx2.height);
+        
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 0, 0, 0);
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 1, 1, 0);
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 2, 2, 0);
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 3, 3, 0);
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 4, 4, 0);
+    ssd1306_set_pixel(ssd1306Ctx0.pDriver, 5, 5, 0);
 
-
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 0, 0, 0);
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 1, 1, 0);
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 2, 2, 0);
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 3, 3, 0);
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 4, 4, 0);
+    ssd1306_set_pixel(ssd1306Ctx2.pDriver, 5, 5, 0);
     // test_u8x8(1, 0x3C);
     // test_u8x8(I2C_ID, 0x3C);
     // test_u8x8(1, 0x3D);

@@ -16,6 +16,7 @@ typedef struct DISP_CTX_SSD1306{
     uint32_t orientation;
     uint8_t i2cID;
     uint8_t i2cAddr;
+    uint8_t height;
 }DISP_CTX_SSD1306_s;
 
 // Functions needed for SSD1306 driver
